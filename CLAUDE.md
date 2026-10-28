@@ -180,7 +180,7 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 | Charts | Recharts | Lazy-loaded on the dashboard. |
 | PDF | pdfmake | Lazy-loaded. A4 portrait. |
 | Excel | SheetJS Community Edition, installed from the official SheetJS CDN tarball (the npm `xlsx` package is outdated) | Lazy-loaded. CSV written by hand. |
-| Photos | `<input type="file" accept="image/*" capture="environment">`, resized with `createImageBitmap` and a canvas, saved as JPEG `Blob` in IndexedDB | Section 8.11. |
+| Photos | `<input type="file" accept="image/*">` without `capture`, so Android offers both camera and gallery (8.11), resized with `createImageBitmap` and a canvas, saved as JPEG `Blob` in IndexedDB | Section 8.11. |
 | Sharing files | Web Share API (`navigator.share({ files })`), fallback to a download link | Opens the Android share sheet (WhatsApp, email, Drive). |
 | Google sign-in and Drive | OAuth authorization code flow through the companion worker, scope `https://www.googleapis.com/auth/drive.file`; Drive REST v3 with `fetch` from the page and the service worker | Phase 4. |
 | Background work | One-off Background Sync API, Push API, Notifications API | Chrome on Android. Section 11. |

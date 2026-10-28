@@ -21,7 +21,8 @@
   "expenses": {
     "title": "Expenses",
     "emptyTitle": "No expenses yet",
-    "emptyBody": "Electricity, caretaker, service charge, taxes and repairs will be listed here by month."
+    "emptyBody": "Electricity, caretaker, service charge, taxes and repairs will be listed here by month.",
+    "add": "Add expense"
   },
   "rent": {
     "title": "Rent",
@@ -147,6 +148,10 @@
       "categoryRequired": "Choose a category",
       "meterInvalid": "Choose a meter of this building",
       "notDraft": "This expense is already confirmed or skipped"
+    },
+    "photos": {
+      "tooMany": "Add at most 2 photos",
+      "unreadable": "This file could not be read as a photo"
     }
   },
   "common": {
@@ -398,5 +403,40 @@
     "deleted": "Tariff deleted",
     "edit": "Edit tariff from {{month}}",
     "delete": "Delete tariff from {{month}}"
+  },
+  "photos": {
+    "label": "Photos",
+    "add": "Add photo",
+    "adding": "Adding…",
+    "photo": "Photo {{number}}",
+    "remove": "Remove photo {{number}}"
+  },
+  "expenseForm": {
+    "newTitle": "New expense",
+    "editTitle": "Edit expense",
+    "amount": "Amount (৳)",
+    "category": "Category",
+    "chooseCategory": "Choose a category",
+    "building": "Building",
+    "meter": "Meter",
+    "noMeter": "No particular meter",
+    "period": "Month",
+    "periodHint": "The month this cost belongs to",
+    "date": "Date",
+    "isPaid": "Already paid",
+    "paidBy": "Paid by",
+    "unpaidHint": "Unpaid bills are listed under Bills to pay until you mark them paid.",
+    "splitRule": "Split",
+    "singleOwner": "Owner who bears it",
+    "customPercent": "{{name}} %",
+    "customAmount": "{{name}} (৳)",
+    "customTotalPercent": "Total {{total}} of 100%",
+    "customTotalAmount": "Total {{total}} of {{amount}}",
+    "preview": "Each owner's share",
+    "previewEmpty": "Enter an amount to see each owner's share.",
+    "tenantPaid": "Kept for reference only: not split between owners and not counted in totals.",
+    "setShares": "Set the shares",
+    "note": "Note",
+    "saved": "Expense saved"
   }
 }

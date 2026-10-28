@@ -15,7 +15,25 @@ import type {
   SplitInput,
   SplitRule,
 } from '@/domain/types'
+import {
+  attachmentTables,
+  deletePhotos,
+  MAX_PHOTOS,
+  replacePhotos,
+  restorePhotos,
+  type PhotoInput,
+} from '@/services/attachments'
 import { todayInDhaka } from '@/services/clock'
+
+/** Every split rule, in the order the expense editor offers them (AGENT.md 8.2). */
+export const EXPENSE_SPLIT_RULES = [
+  'BY_SHARE',
+  'EQUAL',
+  'SINGLE_OWNER',
+  'CUSTOM_PERCENT',
+  'CUSTOM_AMOUNT',
+  'TENANT_PAID',
+] as const satisfies readonly SplitRule[]
 
 export interface ExpenseInput {
   id?: string | undefined
@@ -37,6 +55,8 @@ export interface ExpenseInput {
   source?: ExpenseSource
   /** Confirms a draft as it is saved (AGENT.md 8.3 step 2). */
   confirm?: boolean
+  /** The expense's photos after the save; left out, they stay as they are. */
+  photos?: readonly PhotoInput[]
 }
 
 const expenseTables = () => [
@@ -48,6 +68,7 @@ const expenseTables = () => [
   db.shareEntry,
   db.expense,
   db.expenseAllocation,
+  ...attachmentTables(),
 ]
 
 function validateFields(input: ExpenseInput, today: IsoDate): Errors {
@@ -61,6 +82,7 @@ function validateFields(input: ExpenseInput, today: IsoDate): Errors {
   if (input.units != null && (!Number.isSafeInteger(input.units) || input.units < 0))
     errors.units = 'errors.units.invalid'
   if (input.isPaid && !input.paidByOwnerId) errors.paidByOwnerId = 'errors.expense.payerRequired'
+  if (input.photos && input.photos.length > MAX_PHOTOS) errors.photos = 'errors.photos.tooMany'
   return errors
 }
 
@@ -177,6 +199,7 @@ export async function saveExpense(
     if (!amounts.ok) return amounts
     await db.expense.put(expense)
     await replaceAllocations(expense.id, amounts.value, now)
+    if (input.photos) await replacePhotos('EXPENSE', expense.id, input.photos, now)
     return ok(expense)
   })
 }
@@ -206,40 +229,55 @@ export async function skipDraft(id: string): Promise<Result<Expense>> {
 
 export interface DeletedExpense {
   expense: Expense
-  /** The allocations deleted with the expense, so that undo restores exactly these. */
+  /** The allocations and photos deleted with the expense, so that undo restores exactly these. */
   allocationIds: string[]
+  attachmentIds: string[]
 }
 
-/** Soft-deletes an expense and its allocations (AGENT.md 8.3 step 4). */
+/** Soft-deletes an expense with its allocations and photos (AGENT.md 8.3 step 4, 8.11). */
 export async function deleteExpense(id: string): Promise<Result<DeletedExpense>> {
-  return db.transaction('rw', [db.expense, db.expenseAllocation], async () => {
-    const expense = await db.expense.get(id)
-    if (!expense || !isLive(expense)) return fail({ expense: 'errors.common.notFound' })
-    const now = Date.now()
-    const allocations = (await db.expenseAllocation.where('expenseId').equals(id).toArray()).filter(
-      isLive,
-    )
-    await db.expenseAllocation.bulkPut(
-      allocations.map((a) => ({ ...a, deletedAt: now, updatedAt: now })),
-    )
-    const deleted = { ...expense, deletedAt: now, updatedAt: now }
-    await db.expense.put(deleted)
-    return ok({ expense: deleted, allocationIds: allocations.map((a) => a.id) })
-  })
+  return db.transaction(
+    'rw',
+    [db.expense, db.expenseAllocation, ...attachmentTables()],
+    async () => {
+      const expense = await db.expense.get(id)
+      if (!expense || !isLive(expense)) return fail({ expense: 'errors.common.notFound' })
+      const now = Date.now()
+      const allocations = (
+        await db.expenseAllocation.where('expenseId').equals(id).toArray()
+      ).filter(isLive)
+      await db.expenseAllocation.bulkPut(
+        allocations.map((a) => ({ ...a, deletedAt: now, updatedAt: now })),
+      )
+      const attachmentIds = await deletePhotos('EXPENSE', id, now)
+      const deleted = { ...expense, deletedAt: now, updatedAt: now }
+      await db.expense.put(deleted)
+      return ok({ expense: deleted, allocationIds: allocations.map((a) => a.id), attachmentIds })
+    },
+  )
 }
 
 /** Undoes deleteExpense. */
-export async function restoreExpense({ expense, allocationIds }: DeletedExpense): Promise<void> {
-  await db.transaction('rw', [db.expense, db.expenseAllocation], async () => {
-    const current = await db.expense.get(expense.id)
-    if (!current?.deletedAt) return
-    const now = Date.now()
-    const allocations = (await db.expenseAllocation.bulkGet(allocationIds)).filter(
-      (a) => a !== undefined,
-    )
-    await db.expenseAllocation.bulkPut(
-      allocations.map((a) => ({ ...a, deletedAt: null, updatedAt: now })),
-    )
-    await db.expense.put({ ...current, deletedAt: null, updatedAt: now })
-  })
+export async function restoreExpense({
+  expense,
+  allocationIds,
+  attachmentIds,
+}: DeletedExpense): Promise<void> {
+  await db.transaction(
+    'rw',
+    [db.expense, db.expenseAllocation, ...attachmentTables()],
+    async () => {
+      const current = await db.expense.get(expense.id)
+      if (!current?.deletedAt) return
+      const now = Date.now()
+      const allocations = (await db.expenseAllocation.bulkGet(allocationIds)).filter(
+        (a) => a !== undefined,
+      )
+      await db.expenseAllocation.bulkPut(
+        allocations.map((a) => ({ ...a, deletedAt: null, updatedAt: now })),
+      )
+      await restorePhotos(attachmentIds, now)
+      await db.expense.put({ ...current, deletedAt: null, updatedAt: now })
+    },
+  )
 }

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { db } from '@/data/db'
 import { newRecord } from '@/data/records'
+import { getAttachmentBlob, listAttachments } from '@/data/repositories/attachments'
 import { listAllocations } from '@/data/repositories/expenses'
 import { poisha } from '@/domain/money'
 import { isoDate, period } from '@/domain/period'
@@ -238,5 +239,51 @@ describe('deleteExpense', () => {
     clock.mockRestore()
     expect(await allocated(expense.id)).toEqual({ [o2.id]: 800000 })
     expect((await db.expense.get(expense.id))?.deletedAt).toBe(null)
+  })
+})
+
+describe('expense photos (AGENT.md 8.11)', () => {
+  const photo = (text: string) => ({
+    blob: new Blob([text], { type: 'image/jpeg' }),
+    width: 1600,
+    height: 1200,
+  })
+
+  it('stores up to two photos with the expense and replaces them on edit', async () => {
+    const { caretaker } = await setup()
+    expect(
+      await saveExpense({ ...caretaker, photos: [photo('a'), photo('b'), photo('c')] }, today),
+    ).toEqual({ ok: false, errors: { photos: 'errors.photos.tooMany' } })
+
+    const expense = unwrap(
+      await saveExpense({ ...caretaker, photos: [photo('a'), photo('b')] }, today),
+    )
+    const [first, second] = await listAttachments('EXPENSE', expense.id)
+    expect(first).toMatchObject({ position: 0, mimeType: 'image/jpeg', sizeBytes: 1, width: 1600 })
+    expect(await (await getAttachmentBlob(second?.id ?? ''))?.text()).toBe('b')
+
+    unwrap(
+      await saveExpense(
+        { ...caretaker, id: expense.id, photos: [{ attachmentId: second?.id ?? '' }, photo('c')] },
+        today,
+      ),
+    )
+    const after = await listAttachments('EXPENSE', expense.id)
+    expect(after.map((a) => [a.id === second?.id, a.position])).toEqual([
+      [true, 0],
+      [false, 1],
+    ])
+
+    unwrap(await saveExpense({ ...caretaker, id: expense.id, note: 'kept' }, today))
+    expect(await listAttachments('EXPENSE', expense.id)).toHaveLength(2)
+  })
+
+  it('deletes and restores photos with the expense', async () => {
+    const { caretaker } = await setup()
+    const expense = unwrap(await saveExpense({ ...caretaker, photos: [photo('a')] }, today))
+    const deleted = unwrap(await deleteExpense(expense.id))
+    expect(await listAttachments('EXPENSE', expense.id)).toEqual([])
+    await restoreExpense(deleted)
+    expect(await listAttachments('EXPENSE', expense.id)).toHaveLength(1)
   })
 })

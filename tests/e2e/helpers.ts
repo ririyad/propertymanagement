@@ -50,3 +50,24 @@ export async function completeSetup(page: Page, options: SetupOptions = {}): Pro
   await page.getByRole('button', { name: 'Go to the dashboard' }).click()
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Dashboard')
 }
+
+/** Reads every row of one of the app's IndexedDB tables, to check what a flow saved. */
+export async function readTable<T>(page: Page, table: string): Promise<T[]> {
+  const rows = await page.evaluate(
+    (name) =>
+      new Promise<unknown[]>((resolve, reject) => {
+        const open = indexedDB.open('property-ledger')
+        open.onerror = () => reject(new Error(String(open.error)))
+        open.onsuccess = () => {
+          const request = open.result.transaction(name).objectStore(name).getAll()
+          request.onsuccess = () => {
+            resolve(request.result)
+            open.result.close()
+          }
+          request.onerror = () => reject(new Error(String(request.error)))
+        }
+      }),
+    table,
+  )
+  return rows as T[]
+}
