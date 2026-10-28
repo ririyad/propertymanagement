@@ -16,7 +16,7 @@ export function ListRow({ to, title, detail, trailing }: ListRowProps) {
       <Link to={to} className="flex min-h-14 items-center gap-3 px-4 py-3 hover:bg-accent">
         <span className="min-w-0 flex-1">
           <span className="block truncate font-medium">{title}</span>
-          {detail && <span className="block truncate text-sm text-muted-foreground">{detail}</span>}
+          {detail && <span className="line-clamp-2 text-sm text-muted-foreground">{detail}</span>}
         </span>
         {trailing}
         <ChevronRight aria-hidden className="size-4 shrink-0 text-muted-foreground" />

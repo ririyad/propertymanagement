@@ -6,7 +6,14 @@ import { fail, hasErrors, ok, type Errors, type Result } from '@/domain/result'
 import type { Meter, MeterReading } from '@/domain/types'
 import { replacePhotos, type PhotoInput } from '@/services/attachments'
 import { todayInDhaka } from '@/services/clock'
-import { deleteExpense, expenseTables, saveExpense } from '@/services/expenses'
+import { attachmentTables, deletePhotos, restorePhotos } from '@/services/attachments'
+import {
+  deleteExpense,
+  expenseTables,
+  restoreExpense,
+  saveExpense,
+  type DeletedExpense,
+} from '@/services/expenses'
 
 export interface ReadingEntryInput {
   meterId: string
@@ -218,4 +225,55 @@ export async function saveReadings(
     if (error instanceof NotSaved) return fail(error.errors)
     throw error
   }
+}
+
+export interface DeletedReading {
+  reading: MeterReading
+  /** The bill and photos deleted with the reading, so that undo restores exactly these. */
+  expense: DeletedExpense | null
+  attachmentIds: string[]
+}
+
+/**
+ * Soft-deletes a meter's latest reading with its bill and photos. Only the latest can go, because
+ * an earlier one is the starting point of the bill after it.
+ */
+export async function deleteReading(id: string): Promise<Result<DeletedReading>> {
+  return db.transaction('rw', [db.meterReading, ...expenseTables()], async () => {
+    const reading = await db.meterReading.get(id)
+    if (!reading || !isLive(reading)) return fail({ reading: 'errors.common.notFound' })
+    const later = await db.meterReading
+      .where('meterId')
+      .equals(reading.meterId)
+      .filter((r) => isLive(r) && r.period > reading.period)
+      .count()
+    if (later > 0) return fail({ reading: 'errors.reading.notLatest' })
+
+    const now = Date.now()
+    const linked = await db.expense
+      .where('meterId')
+      .equals(reading.meterId)
+      .filter((e) => isLive(e) && e.readingId === reading.id)
+      .first()
+    const expense = linked ? await deleteExpense(linked.id) : null
+    if (expense && !expense.ok) return expense
+    const deleted = { ...reading, deletedAt: now, updatedAt: now }
+    await db.meterReading.put(deleted)
+    const attachmentIds = await deletePhotos('READING', reading.id, now)
+    return ok({ reading: deleted, expense: expense?.value ?? null, attachmentIds })
+  })
+}
+
+/** Undoes deleteReading. */
+export async function restoreReading(deleted: DeletedReading): Promise<void> {
+  await db.transaction(
+    'rw',
+    [db.meterReading, ...expenseTables(), ...attachmentTables()],
+    async () => {
+      const now = Date.now()
+      await db.meterReading.update(deleted.reading.id, { deletedAt: null, updatedAt: now })
+      if (deleted.expense) await restoreExpense(deleted.expense)
+      await restorePhotos(deleted.attachmentIds, now)
+    },
+  )
 }

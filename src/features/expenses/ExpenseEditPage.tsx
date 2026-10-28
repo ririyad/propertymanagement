@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useState, type ChangeEvent } from 'react'
-import { useForm, useWatch, type Control } from 'react-hook-form'
+import { useForm, useWatch, type Control, type UseFormRegister } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { isLive } from '@/data/records'
@@ -16,6 +16,7 @@ import type {
   Building,
   Expense,
   ExpenseCategory,
+  Meter,
   Owner,
   SplitInput,
   SplitRule,
@@ -203,6 +204,8 @@ function ExpenseForm({
   const isMeterCategory = category?.kind === 'METER'
   const categoryOptions = categories.filter((c) => !c.isHidden || c.id === expense?.categoryId)
   const meterOptions = (meters ?? []).filter((m) => m.isActive || m.id === meterId)
+  // A sub-meter bill takes its amount, month, date and meter from the reading (D45).
+  const fromReading = expense?.source === 'METER_SUB'
 
   // A new expense takes the category's default split until the user picks one (D41).
   const onCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -233,73 +236,31 @@ function ExpenseForm({
     })
     if (!result.ok) return setErrors(result.errors)
     toast({ message: t('expenseForm.saved') })
-    void navigate(`/expenses?month=${result.value.period}`, { replace: true })
+    void navigate(expense ? `/expenses/${expense.id}` : `/expenses?month=${result.value.period}`, {
+      replace: true,
+    })
   })
 
   return (
     <>
       <PageHeader
         title={expense ? t('expenseForm.editTitle') : t('expenseForm.newTitle')}
-        back="/expenses"
+        back={expense ? `/expenses/${expense.id}` : '/expenses'}
       />
       <form onSubmit={(e) => void onSubmit(e)} className="grid gap-4" noValidate>
-        <Field label={t('expenseForm.amount')} error={errors.amount}>
-          <Input
-            inputMode="decimal"
-            autoComplete="off"
-            className="text-lg"
-            {...register('amount')}
-            aria-invalid={!!errors.amount}
+        {fromReading ? (
+          <div className="grid gap-1">
+            <p className="text-3xl font-semibold tabular-nums">{formatTaka(expense.amount)}</p>
+            <p className="text-sm text-muted-foreground">
+              {t('expenseForm.fromReading', { month: formatPeriod(expense.period) })}
+            </p>
+          </div>
+        ) : (
+          <ExpenseBasics
+            {...{ register, errors, categoryOptions, buildings, meterOptions, isMeterCategory }}
+            onCategoryChange={onCategoryChange}
           />
-        </Field>
-        <Field label={t('expenseForm.category')} error={errors.categoryId}>
-          <Select
-            {...register('categoryId', { onChange: onCategoryChange })}
-            aria-invalid={!!errors.categoryId}
-          >
-            <option value="">{t('expenseForm.chooseCategory')}</option>
-            {categoryOptions.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        {(buildings.length > 1 || errors.buildingId) && (
-          <Field label={t('expenseForm.building')} error={errors.buildingId}>
-            <Select {...register('buildingId')} aria-invalid={!!errors.buildingId}>
-              {buildings.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </Select>
-          </Field>
         )}
-        {isMeterCategory && (
-          <Field label={t('expenseForm.meter')} error={errors.meterId}>
-            <Select {...register('meterId')} aria-invalid={!!errors.meterId}>
-              <option value="">{t('expenseForm.noMeter')}</option>
-              {meterOptions.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </Select>
-          </Field>
-        )}
-        <div className="grid grid-cols-2 items-start gap-3">
-          <Field
-            label={t('expenseForm.period')}
-            error={errors.period}
-            hint={t('expenseForm.periodHint')}
-          >
-            <Input type="month" {...register('period')} aria-invalid={!!errors.period} />
-          </Field>
-          <Field label={t('expenseForm.date')} error={errors.date}>
-            <Input type="date" {...register('date')} aria-invalid={!!errors.date} />
-          </Field>
-        </div>
 
         <CheckboxField label={t('expenseForm.isPaid')} {...register('isPaid')} />
         {isPaid ? (
@@ -376,6 +337,88 @@ function ExpenseForm({
           {t('common.save')}
         </Button>
       </form>
+    </>
+  )
+}
+
+/** Amount, category, building, meter, month and date: what a reading's bill takes from it. */
+function ExpenseBasics({
+  register,
+  errors,
+  categoryOptions,
+  buildings,
+  meterOptions,
+  isMeterCategory,
+  onCategoryChange,
+}: {
+  register: UseFormRegister<FormValues>
+  errors: Errors
+  categoryOptions: ExpenseCategory[]
+  buildings: Building[]
+  meterOptions: Meter[]
+  isMeterCategory: boolean
+  onCategoryChange: (event: ChangeEvent<HTMLSelectElement>) => void
+}) {
+  const { t } = useTranslation()
+  return (
+    <>
+      <Field label={t('expenseForm.amount')} error={errors.amount}>
+        <Input
+          inputMode="decimal"
+          autoComplete="off"
+          className="text-lg"
+          {...register('amount')}
+          aria-invalid={!!errors.amount}
+        />
+      </Field>
+      <Field label={t('expenseForm.category')} error={errors.categoryId}>
+        <Select
+          {...register('categoryId', { onChange: onCategoryChange })}
+          aria-invalid={!!errors.categoryId}
+        >
+          <option value="">{t('expenseForm.chooseCategory')}</option>
+          {categoryOptions.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </Select>
+      </Field>
+      {(buildings.length > 1 || errors.buildingId) && (
+        <Field label={t('expenseForm.building')} error={errors.buildingId}>
+          <Select {...register('buildingId')} aria-invalid={!!errors.buildingId}>
+            {buildings.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
+      {isMeterCategory && (
+        <Field label={t('expenseForm.meter')} error={errors.meterId}>
+          <Select {...register('meterId')} aria-invalid={!!errors.meterId}>
+            <option value="">{t('expenseForm.noMeter')}</option>
+            {meterOptions.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.label}
+              </option>
+            ))}
+          </Select>
+        </Field>
+      )}
+      <div className="grid grid-cols-2 items-start gap-3">
+        <Field
+          label={t('expenseForm.period')}
+          error={errors.period}
+          hint={t('expenseForm.periodHint')}
+        >
+          <Input type="month" {...register('period')} aria-invalid={!!errors.period} />
+        </Field>
+        <Field label={t('expenseForm.date')} error={errors.date}>
+          <Input type="date" {...register('date')} aria-invalid={!!errors.date} />
+        </Field>
+      </div>
     </>
   )
 }

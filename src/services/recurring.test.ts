@@ -72,10 +72,10 @@ describe('saveTemplate and generateDrafts (AGENT.md 8.6)', () => {
     expect(await listAllocations(created[0]?.id ?? '')).toEqual([])
 
     // A default payer marks the drafts paid by that owner (D44).
-    unwrap(
+    const paid = unwrap(
       await saveTemplate({ ...input, startPeriod: '2026-10', defaultPaidByOwnerId: o1.id }, today),
     )
-    expect((await listDrafts()).at(-1)).toMatchObject({ isPaid: true, paidByOwnerId: o1.id })
+    expect(await drafts(paid.id)).toMatchObject([{ isPaid: true, paidByOwnerId: o1.id }])
   })
 
   it('never creates a month twice, even after it was skipped or deleted', async () => {

@@ -5,6 +5,7 @@ import { BuildingsPage } from '@/features/buildings/BuildingsPage'
 import { CategoriesPage } from '@/features/categories/CategoriesPage'
 import { CategoryEditPage } from '@/features/categories/CategoryEditPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
+import { ExpenseDetailPage } from '@/features/expenses/ExpenseDetailPage'
 import { ExpenseEditPage } from '@/features/expenses/ExpenseEditPage'
 import { ExpensesPage } from '@/features/expenses/ExpensesPage'
 import { MeterDetailPage } from '@/features/meters/MeterDetailPage'
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
           { index: true, element: <DashboardPage /> },
           { path: 'expenses', element: <ExpensesPage /> },
           { path: 'expenses/new', element: <ExpenseEditPage /> },
+          { path: 'expenses/:id', element: <ExpenseDetailPage /> },
           { path: 'expenses/:id/edit', element: <ExpenseEditPage /> },
           { path: 'rent', element: <RentPage /> },
           { path: 'reports', element: <ReportsPage /> },

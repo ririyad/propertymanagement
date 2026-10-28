@@ -98,3 +98,18 @@ function Thumbnail({ blob, alt }: { blob: Blob; alt: string }) {
   )
   return <img ref={show} alt={alt} className="size-full object-cover" />
 }
+
+/** A record's photos, to look at only. */
+export function PhotoGallery({ photos }: { photos: PhotoItem[] }) {
+  const { t } = useTranslation()
+  if (photos.length === 0) return null
+  return (
+    <section aria-label={t('photos.label')} className="grid grid-cols-2 gap-3">
+      {photos.map((photo, i) => (
+        <div key={photo.key} className="aspect-[4/3] overflow-hidden rounded-md border bg-muted">
+          <Thumbnail blob={photo.blob} alt={t('photos.photo', { number: i + 1 })} />
+        </div>
+      ))}
+    </section>
+  )
+}

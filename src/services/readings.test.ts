@@ -8,7 +8,12 @@ import type { MeterPayer } from '@/domain/types'
 import { ELECTRICITY_CATEGORY_ID } from '@/services/categories'
 import { saveExpense } from '@/services/expenses'
 import { saveMeter, saveTariff, type TariffInput } from '@/services/meters'
-import { saveReadings, type ReadingEntryInput } from '@/services/readings'
+import {
+  deleteReading,
+  restoreReading,
+  saveReadings,
+  type ReadingEntryInput,
+} from '@/services/readings'
 import { resetDb, seedBuildingA, seedSystemCategories, unwrap } from '@/test/db'
 
 const today = isoDate('2026-10-15')
@@ -266,5 +271,32 @@ describe('saveReadings (AGENT.md 8.4)', () => {
     expect(
       await save('elsewhere', '2026-10', [{ meterId: sub.id, readingUnits: 1, isReset: false }]),
     ).toEqual({ ok: false, errors: { 'entries.0.readingUnits': 'errors.common.notFound' } })
+  })
+})
+
+describe('deleteReading', () => {
+  it('deletes the latest reading with its bill, and undo brings both back', async () => {
+    const { building, sub } = await setup()
+    unwrap(await saveTariff(flatTariff(sub.id)))
+    const [september] = unwrap(
+      await save(building.id, '2026-09', [{ meterId: sub.id, readingUnits: 100, isReset: false }]),
+    )
+    const [october] = unwrap(
+      await save(building.id, '2026-10', [{ meterId: sub.id, readingUnits: 250, isReset: false }]),
+    )
+    expect(await deleteReading(september?.id ?? '')).toEqual({
+      ok: false,
+      errors: { reading: 'errors.reading.notLatest' },
+    })
+
+    const deleted = unwrap(await deleteReading(october?.id ?? ''))
+    expect((await listReadings(sub.id)).map((r) => r.period)).toEqual(['2026-09'])
+    expect(await listMeterExpenses(sub.id)).toEqual([])
+
+    await restoreReading(deleted)
+    expect((await listReadings(sub.id)).map((r) => r.period)).toEqual(['2026-09', '2026-10'])
+    const [bill] = await listMeterExpenses(sub.id)
+    expect(bill).toMatchObject({ amount: 150000, readingId: october?.id })
+    expect(await listAllocations(bill?.id ?? '')).toHaveLength(3)
   })
 })

@@ -22,7 +22,22 @@
     "title": "Expenses",
     "emptyTitle": "No expenses yet",
     "emptyBody": "Electricity, caretaker, service charge, taxes and repairs will be listed here by month.",
-    "add": "Add expense"
+    "add": "Add expense",
+    "month": "Month",
+    "building": "Building",
+    "category": "Category",
+    "allCategories": "All categories",
+    "owner": "Owner",
+    "allOwners": "All owners",
+    "emptyMonth": "No expenses in {{month}}",
+    "emptyFiltered": "Nothing matches these filters.",
+    "paidBy": "Paid by {{name}}",
+    "unpaid": "Not paid yet",
+    "tenantPaid": "Paid by the tenant",
+    "shareOf": "{{name}}: {{amount}}",
+    "totalFor": "Total for {{month}}",
+    "total": "Total",
+    "tenantNotCounted": "Bills the tenant pays are listed for reference and not counted."
   },
   "rent": {
     "title": "Rent",
@@ -91,7 +106,8 @@
       "lowerThanPrevious": "This reading is lower than the previous one. Tick \"Meter reset\" if the meter was replaced.",
       "noTariff": "Set up a tariff for this meter first",
       "higherThanNext": "This reading is higher than a later month's reading",
-      "nothingToSave": "Enter at least one reading"
+      "nothingToSave": "Enter at least one reading",
+      "notLatest": "Only a meter's latest reading can be deleted"
     },
     "common": {
       "notFound": "This record no longer exists"
@@ -454,7 +470,8 @@
     "tenantPaid": "Kept for reference only: not split between owners and not counted in totals.",
     "setShares": "Set the shares",
     "note": "Note",
-    "saved": "Expense saved"
+    "saved": "Expense saved",
+    "fromReading": "Worked out from the meter reading for {{month}}. Change the reading to change it."
   },
   "meterEntry": {
     "newBill": "New bill",
@@ -512,7 +529,9 @@
     "enter": "Enter readings",
     "none": "No readings yet",
     "baselineLine": "{{units}} · starting point",
-    "billLine": "{{units}} · {{used}} units"
+    "billLine": "{{units}} · {{used}} units",
+    "delete": "Delete reading",
+    "deleted": "Reading deleted"
   },
   "recurring": {
     "title": "Recurring costs in {{building}}",
@@ -569,5 +588,25 @@
     "banner_one": "{{count}} recurring cost to confirm",
     "banner_other": "{{count}} recurring costs to confirm",
     "bannerAction": "Review"
+  },
+  "expenseDetail": {
+    "building": "Building",
+    "meter": "Meter",
+    "month": "Month",
+    "date": "Date",
+    "dueDate": "Due date",
+    "units": "Units",
+    "payment": "Payment",
+    "split": "Split",
+    "note": "Note",
+    "shares": "Each owner's share",
+    "owner": "Owner",
+    "share": "Share",
+    "sharesDraft": "Shares are worked out when you confirm it.",
+    "toConfirm": "Confirm it",
+    "sharesTenant": "The tenant pays this bill, so it is not shared between owners.",
+    "fromReading": "This bill comes from the meter reading for {{month}}. Change or delete the reading to change it.",
+    "toReadings": "Open readings",
+    "deleted": "Expense deleted"
   }
 }

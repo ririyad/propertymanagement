@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Gauge, TriangleAlert } from 'lucide-react'
+import { Gauge, Trash2, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 import { useForm, useWatch, type Control, type UseFormRegister } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -14,7 +14,12 @@ import { parseUnits } from '@/domain/units'
 import { loadPhotoItems } from '@/features/shared/photoItems'
 import { useBuildings } from '@/features/shared/useLookups'
 import { currentPeriod, todayInDhaka } from '@/services/clock'
-import { saveReadings, type ReadingEntryInput } from '@/services/readings'
+import {
+  deleteReading,
+  restoreReading,
+  saveReadings,
+  type ReadingEntryInput,
+} from '@/services/readings'
 import { Button } from '@/ui/components/button'
 import { Card } from '@/ui/components/card'
 import { Input, Select } from '@/ui/components/input'
@@ -211,6 +216,16 @@ function ReadingsForm({
     toast({ message: t('readings.saved', { month: formatPeriod(month) }) })
   })
 
+  const onDelete = async (reading: MeterReading) => {
+    const result = await deleteReading(reading.id)
+    if (!result.ok)
+      return setErrors({ [`${reading.meterId}.reading`]: result.errors.reading ?? '' })
+    toast({
+      message: t('readings.deleted'),
+      action: { label: t('common.undo'), onClick: () => void restoreReading(result.value) },
+    })
+  }
+
   return (
     <form onSubmit={(e) => void onSubmit(e)} className="grid gap-4" noValidate>
       <ErrorText error={errors.period} />
@@ -231,6 +246,7 @@ function ReadingsForm({
             setPhotos((all) => all.map((p, j) => (j === i ? next : p)))
             setPhotosChanged((all) => all.map((c, j) => c || j === i))
           }}
+          onDelete={(reading) => void onDelete(reading)}
         />
       ))}
       <ErrorText error={errors.form} />
@@ -252,6 +268,7 @@ function ReadingRow({
   errors,
   photos,
   onPhotos,
+  onDelete,
 }: {
   index: number
   row: MeterRow
@@ -261,6 +278,7 @@ function ReadingRow({
   errors: Errors
   photos: PhotoItem[]
   onPhotos: (photos: PhotoItem[]) => void
+  onDelete: (reading: MeterReading) => void
 }) {
   const { t } = useTranslation()
   const { meter, parent } = row
@@ -331,6 +349,15 @@ function ReadingRow({
         {otherErrors.map(([key, error]) => (
           <ErrorText key={key} error={error} />
         ))}
+        {/* Only the latest reading can go: an earlier one starts the next bill. */}
+        {row.current && !row.others.some((r) => r.period > month) && (
+          <div>
+            <Button variant="outline" onClick={() => row.current && onDelete(row.current)}>
+              <Trash2 aria-hidden />
+              {t('readings.delete')}
+            </Button>
+          </div>
+        )}
       </fieldset>
     </Card>
   )

@@ -17,6 +17,7 @@ interface ExpenseRow {
   period: string
   amount: number
   readingId: string | null
+  deletedAt: number | null
 }
 
 test('enters a month of sub-meter readings and bills them', async ({ page }) => {
@@ -100,4 +101,17 @@ test('enters a month of sub-meter readings and bills them', async ({ page }) => 
     /October 2026\s*12,730 · 280 units\s*৳2,800/,
     /September 2026\s*12,450 · starting point/,
   ])
+
+  // Only the latest reading can be deleted, and undo brings it back with its bill.
+  await page.getByRole('link', { name: /^October 2026/ }).click()
+  await flat1.getByRole('button', { name: 'Delete reading' }).click()
+  await expect(page.getByText('Reading deleted')).toBeVisible()
+  await expect(flat1.getByLabel('Reading')).toHaveValue('')
+  const bills = await readTable<ExpenseRow>(page, 'expense')
+  expect(bills.map((e) => typeof e.deletedAt)).toEqual(['number'])
+  await page.getByRole('button', { name: 'Undo' }).click()
+  await expect(flat1.getByLabel('Reading')).toHaveValue('12730')
+  await page.getByLabel('Month').fill('2026-09')
+  await expect(flat1.getByLabel('Reading')).toHaveValue('12450')
+  await expect(flat1.getByRole('button', { name: 'Delete reading' })).toHaveCount(0)
 })
