@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import { db } from '@/data/db'
 import { getBuilding } from '@/data/repositories/buildings'
+import { listMeters } from '@/data/repositories/meters'
 import { listShareSets } from '@/data/repositories/shares'
 import { inForce } from '@/domain/period'
 import { deleteBuilding, restoreBuilding } from '@/services/buildings'
@@ -31,6 +32,7 @@ export function BuildingDetailPage() {
     [building?.groupId],
   )
   const shareSets = useLiveQuery(() => listShareSets(id), [id])
+  const meterCount = useLiveQuery(async () => (await listMeters(id)).length, [id])
   if (!building) return null
 
   const shownShareSet = shareSets && (inForce(shareSets, currentPeriod()) ?? shareSets[0])
@@ -73,6 +75,15 @@ export function BuildingDetailPage() {
               shownShareSet
                 ? t('buildings.sharesCurrent', { month: formatPeriod(shownShareSet.effectiveFrom) })
                 : t('buildings.sharesNone')
+            }
+          />
+          <ListRow
+            to={`/buildings/${id}/meters`}
+            title={t('buildings.metersLink')}
+            detail={
+              meterCount
+                ? t('buildings.metersCount', { count: meterCount })
+                : t('buildings.metersNone')
             }
           />
         </List>

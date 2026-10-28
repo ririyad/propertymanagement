@@ -6,6 +6,10 @@ import { CategoriesPage } from '@/features/categories/CategoriesPage'
 import { CategoryEditPage } from '@/features/categories/CategoryEditPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { ExpensesPage } from '@/features/expenses/ExpensesPage'
+import { MeterDetailPage } from '@/features/meters/MeterDetailPage'
+import { MeterEditPage } from '@/features/meters/MeterEditPage'
+import { MetersPage } from '@/features/meters/MetersPage'
+import { TariffEditPage } from '@/features/meters/TariffEditPage'
 import { MorePage } from '@/features/more/MorePage'
 import { OwnerDetailPage } from '@/features/owners/OwnerDetailPage'
 import { OwnerEditPage } from '@/features/owners/OwnerEditPage'
@@ -44,6 +48,12 @@ const router = createBrowserRouter([
           { path: 'buildings/:id/shares', element: <SharesPage /> },
           { path: 'buildings/:id/shares/new', element: <ShareSetEditPage /> },
           { path: 'buildings/:id/shares/:shareSetId/edit', element: <ShareSetEditPage /> },
+          { path: 'buildings/:id/meters', element: <MetersPage /> },
+          { path: 'buildings/:id/meters/new', element: <MeterEditPage /> },
+          { path: 'meters/:meterId', element: <MeterDetailPage /> },
+          { path: 'meters/:meterId/edit', element: <MeterEditPage /> },
+          { path: 'meters/:meterId/tariffs/new', element: <TariffEditPage /> },
+          { path: 'meters/:meterId/tariffs/:tariffId/edit', element: <TariffEditPage /> },
           { path: 'categories', element: <CategoriesPage /> },
           { path: 'categories/new', element: <CategoryEditPage /> },
           { path: 'categories/:id/edit', element: <CategoryEditPage /> },

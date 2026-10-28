@@ -81,7 +81,9 @@
       "slabsIncreasing": "Each slab must end above the one before it",
       "lastSlabOpen": "Only the last slab has no upper limit",
       "fixedChargeInvalid": "Enter a fixed charge of 0 or more",
-      "vatInvalid": "VAT must be between 0% and 100%"
+      "vatInvalid": "VAT must be between 0% and 100%",
+      "subMeterOnly": "Only sub meters have a tariff",
+      "effectiveFromTaken": "This meter already has a tariff starting this month"
     },
     "reading": {
       "invalidUnits": "Enter a whole number of units",
@@ -118,6 +120,21 @@
       "splitRuleInvalid": "Choose by ownership share or equally",
       "systemCannotBeDeleted": "Built-in categories cannot be deleted. You can hide this one instead.",
       "inUse": "This category is used by expenses, meters or recurring costs. You can hide it instead."
+    },
+    "meter": {
+      "labelRequired": "Enter a meter name",
+      "labelTaken": "This building already has a meter with this name",
+      "typeInvalid": "Choose a type",
+      "payerInvalid": "Choose who pays",
+      "parentInvalid": "Choose a postpaid or prepaid meter of this building",
+      "categoryInvalid": "Choose a meter category",
+      "typeLocked": "This meter has readings or bills, so its type cannot change",
+      "hasSubMeters": "Sub meters sit under this meter. Move or delete them first.",
+      "inUse": "This meter has readings or bills, so it cannot be deleted. Mark it as not in use instead."
+    },
+    "units": {
+      "required": "Enter the units",
+      "invalid": "Enter a whole number of units"
     }
   },
   "common": {
@@ -237,7 +254,10 @@
     "sharesNone": "No shares set yet",
     "sharesCurrent": "From {{month}}",
     "metersLink": "Meters",
-    "templatesLink": "Recurring costs"
+    "templatesLink": "Recurring costs",
+    "metersCount_one": "{{count}} meter",
+    "metersCount_other": "{{count}} meters",
+    "metersNone": "No meters yet"
   },
   "sharesPage": {
     "title": "Shares in {{building}}",
@@ -285,5 +305,86 @@
     "moveUp": "Move {{name}} up",
     "moveDown": "Move {{name}} down",
     "deleted": "Category deleted"
+  },
+  "meter": {
+    "label": "Meter name",
+    "labelHint": "Such as \"Ground floor common\" or \"Flat 3B\"",
+    "meterNo": "Meter or account number",
+    "type": "Type",
+    "types": {
+      "POSTPAID": "Postpaid",
+      "PREPAID": "Prepaid",
+      "SUB": "Sub meter"
+    },
+    "typeHint": "Postpaid: a monthly bill from the utility. Prepaid: recharged in advance. Sub meter: read each month and billed with your own tariff.",
+    "payer": "Who pays",
+    "payers": {
+      "OWNERS": "The owners",
+      "TENANT": "The tenant"
+    },
+    "payerHint": "Bills a tenant pays are kept for reference only and are not split between owners.",
+    "tenantPays": "Tenant pays",
+    "parent": "Main meter",
+    "parentHint": "The meter this sub meter sits under. That meter's bill already includes this usage, so readings here create no expense of their own.",
+    "noParent": "None, billed on its own",
+    "category": "Category",
+    "isActive": "In use",
+    "inactive": "Not in use",
+    "underParent": "Under {{parent}}"
+  },
+  "meters": {
+    "title": "Meters in {{building}}",
+    "add": "Add meter",
+    "new": "New meter",
+    "editTitle": "Edit meter",
+    "empty": "No meters yet",
+    "emptyBody": "Add this building's electricity meters: postpaid, prepaid and sub meters.",
+    "deleted": "Meter deleted",
+    "tariffs": "Tariffs",
+    "noTariffs": "No tariff yet. Readings of this meter cannot be billed until it has one.",
+    "addTariff": "Add tariff"
+  },
+  "tariff": {
+    "newTitle": "New tariff",
+    "editTitle": "Edit tariff",
+    "effectiveFrom": "Effective from",
+    "effectiveFromHint": "Readings from this month onwards use this tariff. Bills already saved keep their amounts.",
+    "copiedFrom": "Rates copied from {{meter}}. Change them if this meter is billed differently.",
+    "mode": "Pricing",
+    "modes": {
+      "FLAT": "One rate for every unit",
+      "SLAB": "Slabs"
+    },
+    "flatRate": "Rate per unit (৳)",
+    "slabMode": "How slabs are charged",
+    "slabModes": {
+      "PROGRESSIVE": "Each slab at its own rate",
+      "SINGLE_BAND": "All units at the rate of the slab reached"
+    },
+    "slab": "Slab {{number}}",
+    "slabUpTo": "Up to units",
+    "slabAbove": "Above {{units}} units",
+    "slabAll": "All units",
+    "slabRate": "Rate (৳)",
+    "addSlab": "Add slab",
+    "removeSlab": "Remove slab {{number}}",
+    "fixedCharge": "Fixed monthly charge (৳)",
+    "fixedChargeHint": "Demand charge or meter rent. 0 if none.",
+    "vat": "VAT %",
+    "vatOnFixed": "Charge VAT on the fixed charge too",
+    "previewTitle": "Check a bill",
+    "previewUnits": "Units used",
+    "preview": "{{units}} units = {{amount}}",
+    "previewIncomplete": "Fill in the rates to see the bill.",
+    "line": "{{units}} units × {{rate}}",
+    "fixedLine": "Fixed charge",
+    "vatLine": "VAT",
+    "from": "From {{month}}",
+    "summaryFlat": "{{rate}} per unit",
+    "summarySlabs_one": "{{count}} slab",
+    "summarySlabs_other": "{{count}} slabs",
+    "deleted": "Tariff deleted",
+    "edit": "Edit tariff from {{month}}",
+    "delete": "Delete tariff from {{month}}"
   }
 }

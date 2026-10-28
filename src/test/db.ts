@@ -2,6 +2,7 @@ import { db } from '@/data/db'
 import { bp } from '@/domain/bp'
 import { period } from '@/domain/period'
 import { saveBuilding } from '@/services/buildings'
+import { SYSTEM_CATEGORIES, seedCategories, type SystemCategoryKey } from '@/services/categories'
 import { saveOwner } from '@/services/owners'
 import { saveShareSet } from '@/services/shares'
 
@@ -34,4 +35,10 @@ export async function seedBuildingA() {
     }),
   )
   return { o1, o2, o3, building, shareSet }
+}
+
+/** Seeds the system categories, named by their keys. */
+export async function seedSystemCategories(): Promise<void> {
+  const names = Object.fromEntries(SYSTEM_CATEGORIES.map((c) => [c.key, c.key]))
+  await seedCategories(names as Record<SystemCategoryKey, string>)
 }
