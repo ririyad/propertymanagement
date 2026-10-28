@@ -32,7 +32,8 @@ export function BuildingDetailPage() {
     [building?.groupId],
   )
   const shareSets = useLiveQuery(() => listShareSets(id), [id])
-  const meterCount = useLiveQuery(async () => (await listMeters(id)).length, [id])
+  const meters = useLiveQuery(() => listMeters(id), [id])
+  const meterCount = meters?.length
   if (!building) return null
 
   const shownShareSet = shareSets && (inForce(shareSets, currentPeriod()) ?? shareSets[0])
@@ -86,6 +87,13 @@ export function BuildingDetailPage() {
                 : t('buildings.metersNone')
             }
           />
+          {meters?.some((m) => m.type === 'SUB' && m.isActive) && (
+            <ListRow
+              to={`/readings?building=${id}&month=${currentPeriod()}`}
+              title={t('buildings.readingsLink')}
+              detail={t('buildings.readingsHint')}
+            />
+          )}
         </List>
         <div>
           <Button variant="outline" onClick={() => void onDelete()}>

@@ -11,6 +11,11 @@ export function formatTaka(amount: Poisha): string {
   return `${negative ? '-' : ''}৳${grouping.format(taka)}${fraction}`
 }
 
+/** Meter units with grouping: 12450 gives "12,450". */
+export function formatUnits(units: number): string {
+  return grouping.format(units)
+}
+
 /** An amount as the user would type it, for prefilling inputs: 150050 gives "1500.50". */
 export function takaInputValue(amount: Poisha): string {
   const { negative, taka, poisha } = toTakaParts(amount)

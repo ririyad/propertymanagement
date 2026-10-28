@@ -7,12 +7,14 @@ import { isLive } from '@/data/records'
 import { getCategory } from '@/data/repositories/categories'
 import { listMeterExpenses } from '@/data/repositories/expenses'
 import { getMeter, listTariffs } from '@/data/repositories/meters'
-import type { Expense, Meter, Tariff } from '@/domain/types'
+import { listReadings } from '@/data/repositories/readings'
+import type { Expense, Meter, MeterReading, Tariff } from '@/domain/types'
+import { currentPeriod } from '@/services/clock'
 import { deleteMeter, restoreMeter } from '@/services/meters'
 import { Button } from '@/ui/components/button'
 import { Card } from '@/ui/components/card'
 import { ErrorText } from '@/ui/Field'
-import { formatDate, formatPeriod, formatTaka } from '@/ui/format'
+import { formatDate, formatPeriod, formatTaka, formatUnits } from '@/ui/format'
 import { outlineLinkClass } from '@/ui/linkStyles'
 import { List, ListRow } from '@/ui/ListRow'
 import { PageHeader } from '@/ui/PageHeader'
@@ -30,16 +32,17 @@ export function MeterDetailPage() {
   const loaded = useLiveQuery(async () => {
     const meter = await getMeter(meterId)
     if (!meter || !isLive(meter)) return undefined
-    const [parent, category, tariffs, entries] = await Promise.all([
+    const [parent, category, tariffs, entries, readings] = await Promise.all([
       meter.parentMeterId ? getMeter(meter.parentMeterId) : undefined,
       getCategory(meter.categoryId),
       listTariffs(meter.id),
       listMeterExpenses(meter.id),
+      listReadings(meter.id),
     ])
-    return { meter, parent, category, tariffs, entries }
+    return { meter, parent, category, tariffs, entries, readings }
   }, [meterId])
   if (!loaded) return null
-  const { meter, parent, category, tariffs, entries } = loaded
+  const { meter, parent, category, tariffs, entries, readings } = loaded
 
   const onDelete = async () => {
     const result = await deleteMeter(meter.id)
@@ -79,7 +82,10 @@ export function MeterDetailPage() {
           </dl>
         </Card>
         {meter.type === 'SUB' ? (
-          <Tariffs meter={meter} tariffs={tariffs} />
+          <>
+            <Readings meter={meter} readings={readings} />
+            <Tariffs meter={meter} tariffs={tariffs} />
+          </>
         ) : (
           <Entries meter={meter} entries={entries} />
         )}
@@ -174,6 +180,56 @@ function Entries({ meter, entries }: { meter: Meter; entries: Expense[] }) {
               }
             />
           ))}
+        </List>
+      )}
+    </section>
+  )
+}
+
+/** A sub meter's latest readings; each opens that month's readings screen (AGENT.md 8.4). */
+function Readings({ meter, readings }: { meter: Meter; readings: MeterReading[] }) {
+  const { t } = useTranslation()
+  const monthLink = (month: string) => `/readings?building=${meter.buildingId}&month=${month}`
+  return (
+    <section aria-labelledby="readings-title" className="grid gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 id="readings-title" className="text-lg font-semibold">
+          {t('readings.history')}
+        </h2>
+        <Link to={monthLink(currentPeriod())} className={outlineLinkClass}>
+          <Plus aria-hidden />
+          {t('readings.enter')}
+        </Link>
+      </div>
+      {readings.length === 0 ? (
+        <p className="text-muted-foreground">{t('readings.none')}</p>
+      ) : (
+        <List>
+          {readings
+            .slice(-12)
+            .reverse()
+            .map((reading) => (
+              <ListRow
+                key={reading.id}
+                to={monthLink(reading.period)}
+                title={formatPeriod(reading.period)}
+                detail={
+                  reading.unitsUsed === null
+                    ? t('readings.baselineLine', { units: formatUnits(reading.readingUnits) })
+                    : t('readings.billLine', {
+                        units: formatUnits(reading.readingUnits),
+                        used: formatUnits(reading.unitsUsed),
+                      })
+                }
+                trailing={
+                  reading.billAmount !== null && (
+                    <span className="font-medium tabular-nums">
+                      {formatTaka(reading.billAmount)}
+                    </span>
+                  )
+                }
+              />
+            ))}
         </List>
       )}
     </section>

@@ -127,6 +127,7 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 | D40 | The system categories of 7.7 have fixed ids (`system-electricity` and so on) so code can find them, and are seeded on every start until done. Until setup is finished the app opens the setup wizard; its first step links to restoring a backup file. | Plan, 28 Oct |
 | D41 | A category's default split rule is `BY_SHARE` or `EQUAL`; rules that need per-expense input (single owner, custom, tenant-paid) are chosen on the expense. A built-in category keeps its kind. A user category can be deleted only while no expense, meter or recurring template uses it; otherwise it can be hidden. Hidden categories are not offered for new records. | Plan, 28 Oct |
 | D42 | Adding or editing a tariff does not change bills already saved; saving a reading again (8.4 rule 7) recomputes its bill with the tariff then in force. A new tariff starts from the meter's newest tariff, or from the most recently saved tariff of another sub meter in the building. | Plan, 28 Oct |
+| D43 | "Readings for month" saves the month's readings of a building in one transaction, all or none, and only rows that are new or changed. Its read-on date is the date of each bill expense. A bill expense starts unpaid with the category's default split; editing a reading later keeps the payer and split set on it, and an unchanged bill keeps its allocations. A reading cannot be raised above a later month's reading. | Plan, 28 Oct |
 
 ## 3. Glossary
 

@@ -89,7 +89,9 @@
     "reading": {
       "invalidUnits": "Enter a whole number of units",
       "lowerThanPrevious": "This reading is lower than the previous one. Tick \"Meter reset\" if the meter was replaced.",
-      "noTariff": "Set up a tariff for this meter first"
+      "noTariff": "Set up a tariff for this meter first",
+      "higherThanNext": "This reading is higher than a later month's reading",
+      "nothingToSave": "Enter at least one reading"
     },
     "common": {
       "notFound": "This record no longer exists"
@@ -277,7 +279,9 @@
     "templatesLink": "Recurring costs",
     "metersCount_one": "{{count}} meter",
     "metersCount_other": "{{count}} meters",
-    "metersNone": "No meters yet"
+    "metersNone": "No meters yet",
+    "readingsLink": "Meter readings",
+    "readingsHint": "Enter this month's sub-meter readings"
   },
   "sharesPage": {
     "title": "Shares in {{building}}",
@@ -470,5 +474,34 @@
     "paidLine": "Paid {{date}}",
     "dueLine": "Due {{date}}",
     "unpaidLine": "Not paid"
+  },
+  "readings": {
+    "title": "Meter readings",
+    "building": "Building",
+    "month": "Month",
+    "readOn": "Read on",
+    "reading": "Reading",
+    "previous": "Previous: {{units}} in {{month}}",
+    "first": "First reading: it sets the starting point",
+    "tenantPays": "Reading only: the tenant pays this meter",
+    "underParent": "Reading only: {{parent}}'s bill includes it",
+    "reset": "Meter reset or replaced",
+    "manualUnits": "Units used",
+    "manualUnitsHint": "Leave empty to start counting from this reading",
+    "baseline": "Starting point, no bill",
+    "covers_one": "Covers {{count}} month",
+    "covers_other": "Covers {{count}} months",
+    "highUsage": "Much higher than the last bills. Check the reading.",
+    "addTariff": "Add tariff",
+    "save": "Save readings",
+    "saved": "Readings saved for {{month}}",
+    "empty": "No sub meters in this building",
+    "emptyBody": "Add sub meters to enter their readings here.",
+    "toMeters": "Go to meters",
+    "history": "Readings",
+    "enter": "Enter readings",
+    "none": "No readings yet",
+    "baselineLine": "{{units}} · starting point",
+    "billLine": "{{units}} · {{used}} units"
   }
 }

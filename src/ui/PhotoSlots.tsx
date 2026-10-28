@@ -2,6 +2,7 @@ import { Camera, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MAX_PHOTOS } from '@/services/attachments'
+import { cn } from '@/ui/cn'
 import { Button } from '@/ui/components/button'
 import { ErrorText } from '@/ui/Field'
 import { resizePhoto, type PhotoItem } from '@/ui/photos'
@@ -14,10 +15,13 @@ export function PhotoSlots({
   photos,
   onChange,
   error,
+  compact = false,
 }: {
   photos: PhotoItem[]
   onChange: (photos: PhotoItem[]) => void
   error?: string | undefined
+  /** Smaller slots, for a screen with many records such as the readings list. */
+  compact?: boolean
 }) {
   const { t } = useTranslation()
   const [busy, setBusy] = useState(false)
@@ -40,7 +44,7 @@ export function PhotoSlots({
   return (
     <fieldset className="grid gap-2">
       <legend className="mb-1.5 text-sm font-medium">{t('photos.label')}</legend>
-      <div className="grid grid-cols-2 gap-3">
+      <div className={cn('grid gap-3', compact ? 'grid-cols-3' : 'grid-cols-2')}>
         {photos.map((photo, i) => (
           <div
             key={photo.key}

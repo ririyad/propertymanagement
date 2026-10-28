@@ -59,7 +59,8 @@ export interface ExpenseInput {
   photos?: readonly PhotoInput[]
 }
 
-const expenseTables = () => [
+/** The tables saveExpense writes, for callers that save expenses inside their own transaction. */
+export const expenseTables = () => [
   db.building,
   db.expenseCategory,
   db.meter,
