@@ -2,6 +2,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import { BuildingDetailPage } from '@/features/buildings/BuildingDetailPage'
 import { BuildingEditPage } from '@/features/buildings/BuildingEditPage'
 import { BuildingsPage } from '@/features/buildings/BuildingsPage'
+import { CategoriesPage } from '@/features/categories/CategoriesPage'
+import { CategoryEditPage } from '@/features/categories/CategoryEditPage'
 import { DashboardPage } from '@/features/dashboard/DashboardPage'
 import { ExpensesPage } from '@/features/expenses/ExpensesPage'
 import { MorePage } from '@/features/more/MorePage'
@@ -42,6 +44,9 @@ const router = createBrowserRouter([
           { path: 'buildings/:id/shares', element: <SharesPage /> },
           { path: 'buildings/:id/shares/new', element: <ShareSetEditPage /> },
           { path: 'buildings/:id/shares/:shareSetId/edit', element: <ShareSetEditPage /> },
+          { path: 'categories', element: <CategoriesPage /> },
+          { path: 'categories/new', element: <CategoryEditPage /> },
+          { path: 'categories/:id/edit', element: <CategoryEditPage /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

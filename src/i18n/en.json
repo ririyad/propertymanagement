@@ -110,6 +110,14 @@
       "nameRequired": "Enter a building name",
       "nameTaken": "A building with this name already exists",
       "inUse": "This building has meters, expenses or recurring costs, so it cannot be deleted"
+    },
+    "category": {
+      "nameRequired": "Enter a category name",
+      "nameTaken": "A category with this name already exists",
+      "kindInvalid": "Choose a type",
+      "splitRuleInvalid": "Choose by ownership share or equally",
+      "systemCannotBeDeleted": "Built-in categories cannot be deleted. You can hide this one instead.",
+      "inUse": "This category is used by expenses, meters or recurring costs. You can hide it instead."
     }
   },
   "common": {
@@ -245,5 +253,37 @@
     "edit": "Edit shares from {{month}}",
     "delete": "Delete shares from {{month}}",
     "deleted": "Share set deleted"
+  },
+  "splitRule": {
+    "BY_SHARE": "By ownership share",
+    "EQUAL": "Equally between owners",
+    "SINGLE_OWNER": "One owner bears it all",
+    "CUSTOM_PERCENT": "Custom percentages",
+    "CUSTOM_AMOUNT": "Custom amounts",
+    "TENANT_PAID": "Paid by the tenant"
+  },
+  "category": {
+    "name": "Category name",
+    "kind": "Type",
+    "kindLocked": "Built-in categories keep their type.",
+    "defaultSplitRule": "Split by default",
+    "defaultSplitRuleHint": "Each expense can still use a different split.",
+    "isHidden": "Hide from new expenses",
+    "kinds": {
+      "METER": "Meter bills",
+      "RECURRING": "Regular cost",
+      "ONE_OFF": "One-off cost"
+    }
+  },
+  "categories": {
+    "title": "Categories",
+    "add": "Add category",
+    "new": "New category",
+    "editTitle": "Edit category",
+    "hidden": "Hidden",
+    "builtIn": "Built in",
+    "moveUp": "Move {{name}} up",
+    "moveDown": "Move {{name}} down",
+    "deleted": "Category deleted"
   }
 }
