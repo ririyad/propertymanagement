@@ -1,0 +1,12 @@
+{
+  // Type-checks src/domain without the DOM library, so domain code cannot touch the
+  // browser (AGENT.md 0.2 rule 3, decision D34). Tests are checked by tsconfig.app.json.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.domain.tsbuildinfo",
+    "lib": ["ES2023"],
+    "types": []
+  },
+  "include": ["src/domain"],
+  "exclude": ["src/domain/**/*.test.ts"]
+}
