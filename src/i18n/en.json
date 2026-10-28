@@ -1,0 +1,88 @@
+{
+  "app": {
+    "name": "Property Ledger",
+    "shortName": "Ledger",
+    "description": "Expenses, rent and each owner's share for jointly owned buildings.",
+    "pageTitle": "{{page}} · Property Ledger"
+  },
+  "nav": {
+    "label": "Main",
+    "dashboard": "Dashboard",
+    "expenses": "Expenses",
+    "rent": "Rent",
+    "reports": "Reports",
+    "more": "More"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "emptyTitle": "Nothing to show yet",
+    "emptyBody": "Each month's earnings, expenses and owner shares will appear here once you start recording them."
+  },
+  "expenses": {
+    "title": "Expenses",
+    "emptyTitle": "No expenses yet",
+    "emptyBody": "Electricity, caretaker, service charge, taxes and repairs will be listed here by month."
+  },
+  "rent": {
+    "title": "Rent",
+    "emptyTitle": "No rent records yet",
+    "emptyBody": "Flats, tenants, payments and dues will be tracked here."
+  },
+  "reports": {
+    "title": "Reports",
+    "emptyTitle": "No reports yet",
+    "emptyBody": "Monthly statements for each owner will be available here as PDF and Excel files."
+  },
+  "more": {
+    "title": "More",
+    "emptyTitle": "Settings are on the way",
+    "emptyBody": "Owners, buildings, shares, meters, categories and backups will be managed here."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "This page does not exist.",
+    "home": "Go to the dashboard"
+  },
+  "update": {
+    "ready": "A new version of the app is ready.",
+    "reload": "Reload to update",
+    "later": "Later"
+  },
+  "errors": {
+    "money": {
+      "required": "Enter an amount",
+      "invalid": "Enter an amount in taka, such as 1,500 or 1500.50",
+      "tooManyDecimals": "Use at most 2 decimal places",
+      "tooLarge": "This amount is too large"
+    },
+    "split": {
+      "noShares": "This split needs the building's ownership shares",
+      "singleOwnerRequired": "Choose the owner who bears this cost",
+      "percentTotal": "Percentages must add up to exactly 100%",
+      "amountTotal": "Owner amounts must add up to the total",
+      "invalidInput": "Enter a valid value for each owner",
+      "duplicateOwner": "Each owner can appear only once"
+    },
+    "shares": {
+      "noneForPeriod": "No ownership shares set for this building in {{month}}",
+      "noEntries": "Add at least one owner",
+      "bpPositive": "Each share must be more than 0%",
+      "duplicateOwner": "Each owner can appear only once",
+      "totalNot100": "Shares must add up to exactly 100%"
+    },
+    "tariff": {
+      "rateInvalid": "Enter a rate in poisha per unit",
+      "slabModeRequired": "Choose how the slabs are charged",
+      "slabsRequired": "Add at least one slab",
+      "slabsIncreasing": "Each slab must end above the one before it",
+      "lastSlabOpen": "Only the last slab has no upper limit",
+      "fixedChargeInvalid": "Enter a fixed charge of 0 or more",
+      "vatInvalid": "VAT must be between 0% and 100%"
+    },
+    "reading": {
+      "invalidUnits": "Enter a whole number of units",
+      "lowerThanPrevious": "This reading is lower than the previous one. Tick \"Meter reset\" if the meter was replaced.",
+      "noTariff": "Set up a tariff for this meter first"
+    }
+  }
+}
