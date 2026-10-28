@@ -72,7 +72,13 @@ export async function saveShareSet(input: ShareSetInput): Promise<Result<ShareSe
   })
 }
 
-export async function deleteShareSet(id: string): Promise<Result<ShareSet>> {
+export interface DeletedShareSet {
+  shareSet: ShareSet
+  /** The entries deleted with the set, so that undo restores exactly these. */
+  entryIds: string[]
+}
+
+export async function deleteShareSet(id: string): Promise<Result<DeletedShareSet>> {
   return db.transaction('rw', [db.shareSet, db.shareEntry], async () => {
     const shareSet = await db.shareSet.get(id)
     if (!shareSet || !isLive(shareSet)) return fail({ shareSet: 'errors.common.notFound' })
@@ -81,6 +87,18 @@ export async function deleteShareSet(id: string): Promise<Result<ShareSet>> {
     await db.shareEntry.bulkPut(entries.map((e) => ({ ...e, deletedAt: now, updatedAt: now })))
     const deleted = { ...shareSet, deletedAt: now, updatedAt: now }
     await db.shareSet.put(deleted)
-    return ok(deleted)
+    return ok({ shareSet: deleted, entryIds: entries.map((e) => e.id) })
+  })
+}
+
+/** Undoes deleteShareSet. Entries replaced by earlier edits stay deleted. */
+export async function restoreShareSet({ shareSet, entryIds }: DeletedShareSet): Promise<void> {
+  await db.transaction('rw', [db.shareSet, db.shareEntry], async () => {
+    const now = Date.now()
+    const current = await db.shareSet.get(shareSet.id)
+    if (!current?.deletedAt) return
+    const entries = (await db.shareEntry.bulkGet(entryIds)).filter((e) => e !== undefined)
+    await db.shareEntry.bulkPut(entries.map((e) => ({ ...e, deletedAt: null, updatedAt: now })))
+    await db.shareSet.put({ ...current, deletedAt: null, updatedAt: now })
   })
 }

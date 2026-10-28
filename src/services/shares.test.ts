@@ -1,7 +1,7 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { listShareEntries, listShareSets, resolveShares } from '@/data/repositories/shares'
 import { period } from '@/domain/period'
-import { deleteShareSet, saveShareSet } from '@/services/shares'
+import { deleteShareSet, restoreShareSet, saveShareSet } from '@/services/shares'
 import { resetDb, seedBuildingA, unwrap } from '@/test/db'
 
 beforeEach(resetDb)
@@ -70,5 +70,31 @@ describe('share sets', () => {
     unwrap(await deleteShareSet(shareSet.id))
     expect(await listShareSets(building.id)).toEqual([])
     expect(await listShareEntries(shareSet.id)).toEqual([])
+  })
+
+  it('restores a deleted set with only the entries deleted with it', async () => {
+    const { o1, o2, building, shareSet } = await seedBuildingA()
+    // The edit and the delete in the same millisecond must still be told apart.
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(1_800_000_000_000)
+    unwrap(
+      await saveShareSet({
+        id: shareSet.id,
+        buildingId: building.id,
+        effectiveFrom: period('2026-01'),
+        entries: [
+          { ownerId: o1.id, bp: 7000 },
+          { ownerId: o2.id, bp: 3000 },
+        ],
+      }),
+    )
+    await restoreShareSet(unwrap(await deleteShareSet(shareSet.id)))
+    clock.mockRestore()
+
+    expect(await listShareSets(building.id)).toMatchObject([{ id: shareSet.id, deletedAt: null }])
+    expect(await listShareEntries(shareSet.id)).toMatchObject([
+      { ownerId: o1.id, bp: 7000 },
+      { ownerId: o2.id, bp: 3000 },
+    ])
+    expect(unwrap(await resolveShares(building.id, period('2026-10'))).owners).toHaveLength(2)
   })
 })

@@ -11,6 +11,8 @@ import { OwnersPage } from '@/features/owners/OwnersPage'
 import { RentPage } from '@/features/rent/RentPage'
 import { ReportsPage } from '@/features/reports/ReportsPage'
 import { SetupPage } from '@/features/setup/SetupPage'
+import { SharesPage } from '@/features/shares/SharesPage'
+import { ShareSetEditPage } from '@/features/shares/ShareSetEditPage'
 import { Toaster } from '@/ui/Toaster'
 import { AppLayout } from './AppLayout'
 import { NotFoundPage } from './NotFoundPage'
@@ -37,6 +39,9 @@ const router = createBrowserRouter([
           { path: 'buildings/new', element: <BuildingEditPage /> },
           { path: 'buildings/:id', element: <BuildingDetailPage /> },
           { path: 'buildings/:id/edit', element: <BuildingEditPage /> },
+          { path: 'buildings/:id/shares', element: <SharesPage /> },
+          { path: 'buildings/:id/shares/new', element: <ShareSetEditPage /> },
+          { path: 'buildings/:id/shares/:shareSetId/edit', element: <ShareSetEditPage /> },
           { path: '*', element: <NotFoundPage /> },
         ],
       },

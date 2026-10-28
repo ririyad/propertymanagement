@@ -167,7 +167,12 @@
     "over": "{{over}} too much",
     "note": "Note",
     "chooseOwner": "Choose an owner",
-    "summary": "Shares set from {{month}}"
+    "summary": "Shares set from {{month}}",
+    "method": {
+      "MANUAL": "Entered manually",
+      "ISLAMIC": "Islamic inheritance",
+      "OTHER": "Other"
+    }
   },
   "setup": {
     "title": "Set up Property Ledger",
@@ -225,5 +230,20 @@
     "sharesCurrent": "From {{month}}",
     "metersLink": "Meters",
     "templatesLink": "Recurring costs"
+  },
+  "sharesPage": {
+    "title": "Shares in {{building}}",
+    "add": "New shares",
+    "newTitle": "New share set",
+    "editTitle": "Edit share set",
+    "empty": "No shares set yet",
+    "emptyBody": "Expenses of this building cannot be split until its ownership shares are set.",
+    "from": "From {{month}}",
+    "current": "In force now",
+    "upcoming": "Starts later",
+    "earlier": "Earlier",
+    "edit": "Edit shares from {{month}}",
+    "delete": "Delete shares from {{month}}",
+    "deleted": "Share set deleted"
   }
 }

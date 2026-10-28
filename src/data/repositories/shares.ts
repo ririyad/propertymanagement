@@ -12,8 +12,15 @@ export async function listShareSets(buildingId: string): Promise<ShareSet[]> {
   return sets.filter(isLive).sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom))
 }
 
+/** A share set's entries, in the owners' display order. */
 export async function listShareEntries(shareSetId: string): Promise<ShareEntry[]> {
-  return (await db.shareEntry.where('shareSetId').equals(shareSetId).toArray()).filter(isLive)
+  const entries = (await db.shareEntry.where('shareSetId').equals(shareSetId).toArray()).filter(
+    isLive,
+  )
+  const owners = await db.owner.bulkGet(entries.map((e) => e.ownerId))
+  const order = new Map(owners.map((o, i) => [entries[i]?.id, o?.sortOrder]))
+  const sortOrder = (e: ShareEntry) => order.get(e.id) ?? Number.MAX_SAFE_INTEGER
+  return entries.sort((a, b) => sortOrder(a) - sortOrder(b))
 }
 
 export interface ResolvedShares {
@@ -36,8 +43,5 @@ export async function resolveShares(
     sortOrder: owners[i]?.sortOrder ?? Number.MAX_SAFE_INTEGER,
   }))
   if (shareOwners.length === 0) return fail({ shareSet: 'errors.shares.noneForPeriod' })
-  return ok({
-    shareSet: found.value,
-    owners: shareOwners.sort((a, b) => a.sortOrder - b.sortOrder),
-  })
+  return ok({ shareSet: found.value, owners: shareOwners })
 }

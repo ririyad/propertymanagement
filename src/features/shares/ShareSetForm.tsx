@@ -14,8 +14,9 @@ import { useServiceErrors } from '@/ui/useServiceErrors'
 interface ShareSetFormProps {
   buildingId: string
   owners: Owner[]
+  /** Without an id, the form saves a new set prefilled with these values. */
   initial?: {
-    id: string
+    id?: string | undefined
     effectiveFrom: Period
     methodNote: string | null
     entries: { ownerId: string; bp: number }[]

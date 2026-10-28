@@ -4,11 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import { db } from '@/data/db'
 import { getBuilding } from '@/data/repositories/buildings'
+import { listShareSets } from '@/data/repositories/shares'
+import { inForce } from '@/domain/period'
 import { deleteBuilding, restoreBuilding } from '@/services/buildings'
+import { currentPeriod } from '@/services/clock'
 import { Button } from '@/ui/components/button'
 import { Card } from '@/ui/components/card'
 import { ErrorText } from '@/ui/Field'
+import { formatPeriod } from '@/ui/format'
 import { outlineLinkClass } from '@/ui/linkStyles'
+import { List, ListRow } from '@/ui/ListRow'
 import { PageHeader } from '@/ui/PageHeader'
 import { useToast } from '@/ui/toastContext'
 import { useServiceErrors } from '@/ui/useServiceErrors'
@@ -25,7 +30,10 @@ export function BuildingDetailPage() {
     async () => (building?.groupId ? db.buildingGroup.get(building.groupId) : undefined),
     [building?.groupId],
   )
+  const shareSets = useLiveQuery(() => listShareSets(id), [id])
   if (!building) return null
+
+  const shownShareSet = shareSets && (inForce(shareSets, currentPeriod()) ?? shareSets[0])
 
   const onDelete = async () => {
     const result = await deleteBuilding(id)
@@ -57,6 +65,17 @@ export function BuildingDetailPage() {
             {building.note && <p className="text-muted-foreground">{building.note}</p>}
           </Card>
         )}
+        <List>
+          <ListRow
+            to={`/buildings/${id}/shares`}
+            title={t('buildings.sharesLink')}
+            detail={
+              shownShareSet
+                ? t('buildings.sharesCurrent', { month: formatPeriod(shownShareSet.effectiveFrom) })
+                : t('buildings.sharesNone')
+            }
+          />
+        </List>
         <div>
           <Button variant="outline" onClick={() => void onDelete()}>
             <Trash2 aria-hidden />
