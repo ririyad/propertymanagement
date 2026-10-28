@@ -117,7 +117,7 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 | D29 | A companion worker on Cloudflare Workers (free plan) sends push reminders and holds the encrypted Google refresh token. It never stores financial data. It is the only server. | Emon, 27 Oct |
 | D30 | Backup is triggered by changes (one-off Background Sync when the app is left) plus a daily push-triggered check, not by a fixed timer, because data only changes when the app is used. | Plan, 27 Oct |
 | D32 | Supporting packages that the section 4 choices need: `@vitejs/plugin-react`, `@tailwindcss/vite`; `class-variance-authority`, `clsx`, `tailwind-merge` (the shadcn/ui variant and `cn` helpers); `workbox-core`, `workbox-precaching`, `workbox-routing`, `workbox-window` (the custom service worker and update prompt); `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals`; `jsdom` and `@testing-library/dom` (component tests); `@types/*`. Radix primitives are added per component when first needed. | Plan, 27 Oct |
-| D33 | TypeScript is pinned to 6.0.x because typescript-eslint (type-aware lint) does not support TypeScript 7 yet. Revisit when it does. | Plan, 27 Oct |
+| D33 | TypeScript 7 (the native compiler) type-checks the project: it is installed as `@typescript/native` (an npm alias of `typescript@7`) and provides `tsc`. TypeScript 7.0 has no JavaScript API, which typescript-eslint needs, so the `typescript` package name is aliased to Microsoft's `@typescript/typescript6` compatibility package (its compiler is `tsc6`). `tsc` is the authority on types; lint uses the TypeScript 6 API. Drop the alias once typescript-eslint supports TypeScript 7. | Emon, revised 28 Oct |
 | D34 | `src/domain` is type-checked a second time by `tsconfig.domain.json` without the DOM library, so DOM use in the domain, or an import that pulls the DOM in, fails `npm run typecheck`. This backs up the ESLint import ban of rule 0.2.3. | Plan, 27 Oct |
 | D35 | `todayInDhaka()` lives in `src/services/clock.ts`. Domain code gets dates as parameters, and `dhakaDateOf(epochMs)` in `period.ts` is the pure conversion it uses. | Plan, 27 Oct |
 | D36 | The Content Security Policy allows no inline scripts or styles (`style-src 'self'`). `vite preview`, and so the e2e tests, serve the same policy from `public/_headers`, and the e2e tests fail on console errors. Loosen it only with a decision-log row. | Plan, 27 Oct |
@@ -163,7 +163,7 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 
 | Concern | Choice | Notes |
 | --- | --- | --- |
-| Language | TypeScript, `strict: true`, `noUncheckedIndexedAccess: true` | |
+| Language | TypeScript 7, `strict: true`, `noUncheckedIndexedAccess: true` | `tsc` is TypeScript 7; the `typescript` package is the TypeScript 6 API for typescript-eslint (decision D33). |
 | Tooling | Node.js LTS 22.x, npm, Vite | The only tools needed. No Android SDK. |
 | UI | React 18 or later, React Router (data router, normal paths; Cloudflare Pages serves `index.html` for unknown paths when the site has no `404.html`) | |
 | Styling and components | Tailwind CSS, shadcn/ui (Radix primitives), lucide-react icons | Components are copied into `src/ui/components`. |

@@ -16,6 +16,11 @@ npm run dev                       # http://localhost:5173
 
 Use Chrome DevTools device mode (Pixel 7, 360 × 780 design width) for a phone-sized view.
 
+TypeScript is installed twice (decision D33 in CLAUDE.md): `tsc` is TypeScript 7, the native
+compiler that type-checks the project, and the `typescript` package is the TypeScript 6
+compatibility API that typescript-eslint needs. In VS Code, install the "TypeScript (Native
+Preview)" extension to get TypeScript 7 in the editor; otherwise the editor uses TypeScript 6.
+
 | Script              | Does                                                                    |
 | ------------------- | ----------------------------------------------------------------------- |
 | `npm run dev`       | Development server. The service worker is off in development.           |
