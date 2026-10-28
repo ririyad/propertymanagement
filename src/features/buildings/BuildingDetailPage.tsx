@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { db } from '@/data/db'
 import { getBuilding } from '@/data/repositories/buildings'
 import { listMeters } from '@/data/repositories/meters'
+import { listTemplates } from '@/data/repositories/recurring'
 import { listShareSets } from '@/data/repositories/shares'
 import { inForce } from '@/domain/period'
 import { deleteBuilding, restoreBuilding } from '@/services/buildings'
@@ -34,6 +35,7 @@ export function BuildingDetailPage() {
   const shareSets = useLiveQuery(() => listShareSets(id), [id])
   const meters = useLiveQuery(() => listMeters(id), [id])
   const meterCount = meters?.length
+  const templateCount = useLiveQuery(async () => (await listTemplates(id)).length, [id])
   if (!building) return null
 
   const shownShareSet = shareSets && (inForce(shareSets, currentPeriod()) ?? shareSets[0])
@@ -85,6 +87,15 @@ export function BuildingDetailPage() {
               meterCount
                 ? t('buildings.metersCount', { count: meterCount })
                 : t('buildings.metersNone')
+            }
+          />
+          <ListRow
+            to={`/buildings/${id}/templates`}
+            title={t('buildings.templatesLink')}
+            detail={
+              templateCount
+                ? t('buildings.templatesCount', { count: templateCount })
+                : t('buildings.templatesNone')
             }
           />
           {meters?.some((m) => m.type === 'SUB' && m.isActive) && (

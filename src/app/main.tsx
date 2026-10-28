@@ -3,11 +3,12 @@ import '@/i18n'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
-import { runStartupTasks } from './startup'
+import { rolloverWhenVisible, runStartupTasks } from './startup'
 import { requestPersistentStorage } from './storage'
 
 void requestPersistentStorage()
 void runStartupTasks()
+rolloverWhenVisible()
 
 const root = document.getElementById('root')
 if (!root) throw new Error('index.html has no #root element')

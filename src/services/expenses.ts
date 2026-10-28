@@ -228,6 +228,15 @@ export async function skipDraft(id: string): Promise<Result<Expense>> {
   })
 }
 
+/** Undoes skipDraft. */
+export async function unskipDraft(id: string): Promise<void> {
+  await db.transaction('rw', db.expense, async () => {
+    const expense = await db.expense.get(id)
+    if (expense?.status === 'SKIPPED')
+      await db.expense.put({ ...expense, status: 'DRAFT', updatedAt: Date.now() })
+  })
+}
+
 export interface DeletedExpense {
   expense: Expense
   /** The allocations and photos deleted with the expense, so that undo restores exactly these. */

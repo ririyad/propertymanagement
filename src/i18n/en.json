@@ -157,6 +157,13 @@
     },
     "meterEntry": {
       "rechargeDateRequired": "Enter the recharge date"
+    },
+    "template": {
+      "frequencyInvalid": "Choose how often",
+      "endBeforeStart": "The last month must not be before the first month",
+      "dueDayInvalid": "Choose a day from 1 to 28",
+      "categoryInvalid": "Choose a category that is not for meters",
+      "payerInvalid": "Choose one of the owners"
     }
   },
   "common": {
@@ -281,7 +288,10 @@
     "metersCount_other": "{{count}} meters",
     "metersNone": "No meters yet",
     "readingsLink": "Meter readings",
-    "readingsHint": "Enter this month's sub-meter readings"
+    "readingsHint": "Enter this month's sub-meter readings",
+    "templatesCount_one": "{{count}} recurring cost",
+    "templatesCount_other": "{{count}} recurring costs",
+    "templatesNone": "No recurring costs yet"
   },
   "sharesPage": {
     "title": "Shares in {{building}}",
@@ -503,5 +513,61 @@
     "none": "No readings yet",
     "baselineLine": "{{units}} · starting point",
     "billLine": "{{units}} · {{used}} units"
+  },
+  "recurring": {
+    "title": "Recurring costs in {{building}}",
+    "add": "Add recurring cost",
+    "new": "New recurring cost",
+    "editTitle": "Edit recurring cost",
+    "empty": "No recurring costs yet",
+    "emptyBody": "Add costs that come back every month, quarter or year, such as the caretaker's salary. Each one gives you a draft to confirm.",
+    "saved": "Recurring cost saved",
+    "deleted": "Recurring cost deleted",
+    "category": "Category",
+    "amount": "Amount (৳)",
+    "frequency": "How often",
+    "frequencies": {
+      "MONTHLY": "Every month",
+      "QUARTERLY": "Every 3 months",
+      "YEARLY": "Every year"
+    },
+    "dueDay": "Due day",
+    "startPeriod": "First month",
+    "endPeriod": "Last month",
+    "paidBy": "Usually paid by",
+    "paidByHint": "Drafts are marked as paid by this owner. You can change it when you confirm.",
+    "notPaid": "Nobody yet (unpaid)",
+    "splitRule": "Split",
+    "note": "Note",
+    "isActive": "In use",
+    "draftsHint": "A draft is created for each month it is due, up to this month. Confirm them on \"Confirm this month\".",
+    "from": "from {{month}}",
+    "fromUntil": "{{from}} to {{until}}",
+    "inactive": "Not in use"
+  },
+  "confirm": {
+    "title": "Confirm this month",
+    "month": "Month",
+    "earlier_one": "{{count}} draft from an earlier month is waiting.",
+    "earlier_other": "{{count}} drafts from earlier months are waiting.",
+    "showMonth": "Show {{month}}",
+    "empty": "Nothing to confirm for {{month}}",
+    "emptyBody": "Drafts from your recurring costs appear here each month.",
+    "toExpenses": "Go to expenses",
+    "due": "Due {{date}}",
+    "amount": "Amount (৳)",
+    "useFromNowOn": "Also use this amount from now on",
+    "isPaid": "Paid",
+    "paidBy": "Paid by",
+    "confirm": "Confirm",
+    "skip": "Skip",
+    "confirmAll": "Confirm all",
+    "confirmed": "{{name}} confirmed",
+    "confirmedMany_one": "{{count}} cost confirmed",
+    "confirmedMany_other": "{{count}} costs confirmed",
+    "skipped": "{{name}} skipped",
+    "banner_one": "{{count}} recurring cost to confirm",
+    "banner_other": "{{count}} recurring costs to confirm",
+    "bannerAction": "Review"
   }
 }

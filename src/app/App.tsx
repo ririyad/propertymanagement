@@ -17,6 +17,9 @@ import { OwnerDetailPage } from '@/features/owners/OwnerDetailPage'
 import { OwnerEditPage } from '@/features/owners/OwnerEditPage'
 import { OwnersPage } from '@/features/owners/OwnersPage'
 import { ReadingsPage } from '@/features/readings/ReadingsPage'
+import { ConfirmPage } from '@/features/recurring/ConfirmPage'
+import { RecurringPage } from '@/features/recurring/RecurringPage'
+import { TemplateEditPage } from '@/features/recurring/TemplateEditPage'
 import { RentPage } from '@/features/rent/RentPage'
 import { ReportsPage } from '@/features/reports/ReportsPage'
 import { SetupPage } from '@/features/setup/SetupPage'
@@ -62,6 +65,10 @@ const router = createBrowserRouter([
           { path: 'meters/:meterId/tariffs/new', element: <TariffEditPage /> },
           { path: 'meters/:meterId/tariffs/:tariffId/edit', element: <TariffEditPage /> },
           { path: 'readings', element: <ReadingsPage /> },
+          { path: 'buildings/:id/templates', element: <RecurringPage /> },
+          { path: 'buildings/:id/templates/new', element: <TemplateEditPage /> },
+          { path: 'templates/:templateId/edit', element: <TemplateEditPage /> },
+          { path: 'confirm', element: <ConfirmPage /> },
           { path: 'categories', element: <CategoriesPage /> },
           { path: 'categories/new', element: <CategoryEditPage /> },
           { path: 'categories/:id/edit', element: <CategoryEditPage /> },
