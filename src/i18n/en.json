@@ -152,6 +152,9 @@
     "photos": {
       "tooMany": "Add at most 2 photos",
       "unreadable": "This file could not be read as a photo"
+    },
+    "meterEntry": {
+      "rechargeDateRequired": "Enter the recharge date"
     }
   },
   "common": {
@@ -438,5 +441,34 @@
     "setShares": "Set the shares",
     "note": "Note",
     "saved": "Expense saved"
+  },
+  "meterEntry": {
+    "newBill": "New bill",
+    "editBill": "Edit bill",
+    "newRecharge": "New recharge",
+    "editRecharge": "Edit recharge",
+    "bills": "Bills",
+    "recharges": "Recharges",
+    "addBill": "Add bill",
+    "addRecharge": "Add recharge",
+    "noBills": "No bills yet",
+    "noRecharges": "No recharges yet",
+    "billMonth": "Bill month",
+    "amount": "Amount (৳)",
+    "amountHint": "Include any late fee.",
+    "dueDate": "Due date",
+    "isPaid": "Paid",
+    "paidOn": "Paid on",
+    "paidBy": "Paid by",
+    "units": "Units on the bill",
+    "rechargeDate": "Recharge date",
+    "note": "Token number or note",
+    "tenantPays": "The tenant pays this meter, so this is kept for reference only: it is not split between owners or counted in totals.",
+    "duplicate": "This meter already has a bill for {{month}}. Save only if this is a second bill.",
+    "billSaved": "Bill saved",
+    "rechargeSaved": "Recharge saved",
+    "paidLine": "Paid {{date}}",
+    "dueLine": "Due {{date}}",
+    "unpaidLine": "Not paid"
   }
 }

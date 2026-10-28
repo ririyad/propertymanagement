@@ -9,6 +9,7 @@ import { ExpenseEditPage } from '@/features/expenses/ExpenseEditPage'
 import { ExpensesPage } from '@/features/expenses/ExpensesPage'
 import { MeterDetailPage } from '@/features/meters/MeterDetailPage'
 import { MeterEditPage } from '@/features/meters/MeterEditPage'
+import { MeterEntryPage } from '@/features/meters/MeterEntryPage'
 import { MetersPage } from '@/features/meters/MetersPage'
 import { TariffEditPage } from '@/features/meters/TariffEditPage'
 import { MorePage } from '@/features/more/MorePage'
@@ -55,6 +56,8 @@ const router = createBrowserRouter([
           { path: 'buildings/:id/meters/new', element: <MeterEditPage /> },
           { path: 'meters/:meterId', element: <MeterDetailPage /> },
           { path: 'meters/:meterId/edit', element: <MeterEditPage /> },
+          { path: 'meters/:meterId/entry', element: <MeterEntryPage /> },
+          { path: 'meters/:meterId/entry/:expenseId', element: <MeterEntryPage /> },
           { path: 'meters/:meterId/tariffs/new', element: <TariffEditPage /> },
           { path: 'meters/:meterId/tariffs/:tariffId/edit', element: <TariffEditPage /> },
           { path: 'categories', element: <CategoriesPage /> },

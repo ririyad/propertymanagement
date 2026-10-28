@@ -4,7 +4,6 @@ import { useForm, useWatch, type Control } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import { isLive } from '@/data/records'
-import { getAttachmentBlob, listAttachments } from '@/data/repositories/attachments'
 import { getExpense } from '@/data/repositories/expenses'
 import { listMeters } from '@/data/repositories/meters'
 import { resolveShares } from '@/data/repositories/shares'
@@ -21,6 +20,7 @@ import type {
   SplitInput,
   SplitRule,
 } from '@/domain/types'
+import { loadPhotoItems } from '@/features/shared/photoItems'
 import { useBuildings, useCategories, useOwners } from '@/features/shared/useLookups'
 import { todayInDhaka } from '@/services/clock'
 import { EXPENSE_SPLIT_RULES, saveExpense } from '@/services/expenses'
@@ -45,17 +45,10 @@ export function ExpenseEditPage() {
   const buildings = useBuildings()
   const categories = useCategories()
   const loaded = useLiveQuery(async () => {
-    if (!id) return { expense: undefined, photos: [] }
+    if (!id) return { expense: undefined, photos: [] as PhotoItem[] }
     const expense = await getExpense(id)
     if (!expense || !isLive(expense)) return null
-    const photos: PhotoItem[] = []
-    for (const attachment of await listAttachments('EXPENSE', expense.id)) {
-      const blob = await getAttachmentBlob(attachment.id)
-      if (blob) {
-        const { id, width, height } = attachment
-        photos.push({ key: id, attachmentId: id, blob, width, height })
-      }
-    }
+    const photos = await loadPhotoItems('EXPENSE', expense.id)
     return { expense, photos }
   }, [id])
   if (!loaded || !owners || !buildings || !categories) return null

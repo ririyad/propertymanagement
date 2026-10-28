@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 import { isLive } from '@/data/records'
 import { getCategory } from '@/data/repositories/categories'
+import { listMeterExpenses } from '@/data/repositories/expenses'
 import { getMeter, listTariffs } from '@/data/repositories/meters'
-import type { Meter, Tariff } from '@/domain/types'
+import type { Expense, Meter, Tariff } from '@/domain/types'
 import { deleteMeter, restoreMeter } from '@/services/meters'
 import { Button } from '@/ui/components/button'
 import { Card } from '@/ui/components/card'
 import { ErrorText } from '@/ui/Field'
-import { formatPeriod } from '@/ui/format'
+import { formatDate, formatPeriod, formatTaka } from '@/ui/format'
 import { outlineLinkClass } from '@/ui/linkStyles'
 import { List, ListRow } from '@/ui/ListRow'
 import { PageHeader } from '@/ui/PageHeader'
@@ -29,15 +30,16 @@ export function MeterDetailPage() {
   const loaded = useLiveQuery(async () => {
     const meter = await getMeter(meterId)
     if (!meter || !isLive(meter)) return undefined
-    const [parent, category, tariffs] = await Promise.all([
+    const [parent, category, tariffs, entries] = await Promise.all([
       meter.parentMeterId ? getMeter(meter.parentMeterId) : undefined,
       getCategory(meter.categoryId),
       listTariffs(meter.id),
+      listMeterExpenses(meter.id),
     ])
-    return { meter, parent, category, tariffs }
+    return { meter, parent, category, tariffs, entries }
   }, [meterId])
   if (!loaded) return null
-  const { meter, parent, category, tariffs } = loaded
+  const { meter, parent, category, tariffs, entries } = loaded
 
   const onDelete = async () => {
     const result = await deleteMeter(meter.id)
@@ -76,7 +78,11 @@ export function MeterDetailPage() {
             </Row>
           </dl>
         </Card>
-        {meter.type === 'SUB' && <Tariffs meter={meter} tariffs={tariffs} />}
+        {meter.type === 'SUB' ? (
+          <Tariffs meter={meter} tariffs={tariffs} />
+        ) : (
+          <Entries meter={meter} entries={entries} />
+        )}
         <div>
           <Button variant="outline" onClick={() => void onDelete()}>
             <Trash2 aria-hidden />
@@ -121,6 +127,51 @@ function Tariffs({ meter, tariffs }: { meter: Meter; tariffs: Tariff[] }) {
               to={`/meters/${meter.id}/tariffs/${tariff.id}/edit`}
               title={t('tariff.from', { month: formatPeriod(tariff.effectiveFrom) })}
               detail={tariffSummary(t, tariff)}
+            />
+          ))}
+        </List>
+      )}
+    </section>
+  )
+}
+
+/** The latest bills (postpaid) or recharges (prepaid) of a meter (AGENT.md 8.4). */
+function Entries({ meter, entries }: { meter: Meter; entries: Expense[] }) {
+  const { t } = useTranslation()
+  const prepaid = meter.type === 'PREPAID'
+  const detail = (entry: Expense) => {
+    if (prepaid) return entry.note ?? undefined
+    if (entry.splitRule === 'TENANT_PAID') return t('meter.tenantPays')
+    if (entry.isPaid) return t('meterEntry.paidLine', { date: formatDate(entry.date) })
+    if (entry.dueDate) return t('meterEntry.dueLine', { date: formatDate(entry.dueDate) })
+    return t('meterEntry.unpaidLine')
+  }
+  return (
+    <section aria-labelledby="entries-title" className="grid gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <h2 id="entries-title" className="text-lg font-semibold">
+          {prepaid ? t('meterEntry.recharges') : t('meterEntry.bills')}
+        </h2>
+        <Link to={`/meters/${meter.id}/entry`} className={outlineLinkClass}>
+          <Plus aria-hidden />
+          {prepaid ? t('meterEntry.addRecharge') : t('meterEntry.addBill')}
+        </Link>
+      </div>
+      {entries.length === 0 ? (
+        <p className="text-muted-foreground">
+          {prepaid ? t('meterEntry.noRecharges') : t('meterEntry.noBills')}
+        </p>
+      ) : (
+        <List>
+          {entries.slice(0, 12).map((entry) => (
+            <ListRow
+              key={entry.id}
+              to={`/meters/${meter.id}/entry/${entry.id}`}
+              title={prepaid ? formatDate(entry.date) : formatPeriod(entry.period)}
+              detail={detail(entry)}
+              trailing={
+                <span className="font-medium tabular-nums">{formatTaka(entry.amount)}</span>
+              }
             />
           ))}
         </List>

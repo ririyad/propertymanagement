@@ -11,3 +11,11 @@ export async function getExpense(id: string): Promise<Expense | undefined> {
 export async function listAllocations(expenseId: string): Promise<ExpenseAllocation[]> {
   return (await db.expenseAllocation.where('expenseId').equals(expenseId).toArray()).filter(isLive)
 }
+
+/** A meter's expenses (bills or recharges), newest first. */
+export async function listMeterExpenses(meterId: string): Promise<Expense[]> {
+  const expenses = await db.expense.where('meterId').equals(meterId).toArray()
+  return expenses
+    .filter((e) => isLive(e) && e.status !== 'SKIPPED')
+    .sort((a, b) => b.period.localeCompare(a.period) || b.date.localeCompare(a.date))
+}
