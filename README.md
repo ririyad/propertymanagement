@@ -4,6 +4,29 @@ An offline-first, installable web app (PWA) that records the expenses and earnin
 owned buildings and shows each owner's share. The full design and development plan is in
 [CLAUDE.md](CLAUDE.md) (also called AGENT.md); read it before changing anything.
 
+## Progress
+
+Phases follow CLAUDE.md section 15. Update this table when a phase's status changes.
+
+| Phase                                     | Goal                                                                      | Status                                                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 0. Foundation                             | A deployed, installable app shell and proven money maths                  | Code complete (P0-T01 to P0-T10), plus the TypeScript 7 upgrade. Two acceptance checks remain (below). |
+| 1. Expense ledger                         | Record a full month of expenses for both buildings and each owner's share | Not started                                                                                            |
+| 2. Earnings and rent                      | Rent charges, payments, credits, dues and who earned what                 | Not started                                                                                            |
+| 3. Dashboard and reports                  | The month at a glance, and PDF, Excel and CSV statements for co-owners    | Not started                                                                                            |
+| 4. Automatic backup, push reminders, lock | Google Drive backup, phone notifications and a PIN app lock               | Not started                                                                                            |
+| 5. Inheritance helper and share history   | Faraid share proposals and a share history timeline                       | Not started                                                                                            |
+| 6. Polish and growth                      | Bangla, co-owner view, multi-device sync (chosen per item)                | Not started                                                                                            |
+
+Phase 0 acceptance criteria:
+
+| Criterion                                                           | Status                                                                  |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| CI is green on `main` and the app is live on Cloudflare Pages       | Pending: needs the Cloudflare project and secrets (see Deployment)      |
+| All 17.1 and 17.2 test vectors pass as unit tests                   | Done                                                                    |
+| The app installs on the phone and opens in airplane mode            | Pending: check on the phone (the automated offline test already passes) |
+| Lint fails on `parseFloat` or `toFixed` in domain, data or services | Done (`tests/lint/guards.test.ts`)                                      |
+
 ## Local setup
 
 Requires Node.js 22 LTS (see `.nvmrc`) and Git. No Android Studio.
