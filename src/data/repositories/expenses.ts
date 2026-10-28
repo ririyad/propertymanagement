@@ -39,3 +39,20 @@ export async function listAllocationsOf(
 ): Promise<ExpenseAllocation[]> {
   return (await db.expenseAllocation.where('expenseId').anyOf(expenseIds).toArray()).filter(isLive)
 }
+
+/**
+ * Confirmed bills still to pay, of one building or all, oldest first (AGENT.md 8.3 rule 6).
+ * Bills the tenant pays are not the owners' to pay.
+ */
+export async function listUnpaidExpenses(buildingId?: string): Promise<Expense[]> {
+  const expenses = await db.expense.where('status').equals('CONFIRMED').toArray()
+  return expenses
+    .filter(
+      (e) =>
+        isLive(e) &&
+        !e.isPaid &&
+        e.splitRule !== 'TENANT_PAID' &&
+        (!buildingId || e.buildingId === buildingId),
+    )
+    .sort((a, b) => (a.dueDate ?? a.date).localeCompare(b.dueDate ?? b.date))
+}

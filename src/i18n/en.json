@@ -15,8 +15,20 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "emptyTitle": "Nothing to show yet",
-    "emptyBody": "Each month's earnings, expenses and owner shares will appear here once you start recording them."
+    "month": "Month",
+    "building": "Building",
+    "expensesIn": "Expenses in {{month}}",
+    "byCategory": "By category",
+    "byOwner": "Each owner's share",
+    "noExpenses": "No expenses in {{month}} yet",
+    "noExpensesBody": "Add this month's expenses, meter readings and recurring costs to see the totals here.",
+    "billsToPay": "Bills to pay",
+    "dueOn": "Due {{date}}",
+    "moreBills_one": "And {{count}} more",
+    "moreBills_other": "And {{count}} more",
+    "quickActions": "Quick actions",
+    "addExpense": "Add expense",
+    "enterReadings": "Enter readings"
   },
   "expenses": {
     "title": "Expenses",
