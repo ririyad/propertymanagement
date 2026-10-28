@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
+import { completeSetup } from './helpers'
 
 const TABS = ['Dashboard', 'Expenses', 'Rent', 'Reports', 'More']
 
@@ -26,6 +27,7 @@ test('shows the five tabs and moves between them', async ({ page }) => {
   const errors = collectConsoleErrors(page)
   const response = await page.goto('/')
   expect(response?.headers()['content-security-policy']).toContain("script-src 'self'")
+  await completeSetup(page)
 
   const nav = page.getByRole('navigation', { name: 'Main' })
   await expect(nav.getByRole('link')).toHaveText(TABS)
@@ -45,6 +47,7 @@ test('shows the five tabs and moves between them', async ({ page }) => {
 })
 
 test('opens deep links and shows a not-found page for unknown paths', async ({ page }) => {
+  await completeSetup(page)
   await page.goto('/rent')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Rent')
 
@@ -56,7 +59,7 @@ test('opens deep links and shows a not-found page for unknown paths', async ({ p
 
 test('works offline after the first visit, including a cold start', async ({ page, context }) => {
   const errors = collectConsoleErrors(page)
-  await page.goto('/')
+  await completeSetup(page)
   await waitForServiceWorkerControl(page)
 
   await context.setOffline(true)

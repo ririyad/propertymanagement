@@ -85,3 +85,8 @@ export function inForce<T extends { effectiveFrom: Period }>(
   }
   return best
 }
+
+/** Periods may be at most one month after today's month (AGENT.md 8.10). */
+export function isWithinNextMonth(p: Period, today: IsoDate): boolean {
+  return monthsBetween(periodOf(today), p) <= 1
+}

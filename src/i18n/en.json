@@ -68,7 +68,9 @@
       "noEntries": "Add at least one owner",
       "bpPositive": "Each share must be more than 0%",
       "duplicateOwner": "Each owner can appear only once",
-      "totalNot100": "Shares must add up to exactly 100%"
+      "totalNot100": "Shares must add up to exactly 100%",
+      "ownerRequired": "Choose an owner",
+      "effectiveFromTaken": "This building already has shares starting this month"
     },
     "tariff": {
       "rateInvalid": "Enter a rate in poisha per unit",
@@ -83,6 +85,118 @@
       "invalidUnits": "Enter a whole number of units",
       "lowerThanPrevious": "This reading is lower than the previous one. Tick \"Meter reset\" if the meter was replaced.",
       "noTariff": "Set up a tariff for this meter first"
+    },
+    "common": {
+      "notFound": "This record no longer exists"
+    },
+    "period": {
+      "invalid": "Choose a month"
+    },
+    "percent": {
+      "required": "Enter a percentage",
+      "invalid": "Enter a percentage such as 50 or 33.33",
+      "tooManyDecimals": "Use at most 2 decimal places",
+      "outOfRange": "Enter a percentage from 0 to 100"
+    },
+    "owner": {
+      "nameRequired": "Enter a name",
+      "nameTooLong": "Use at most 60 characters",
+      "primaryCannotBeDeleted": "You cannot delete yourself",
+      "holdsShares": "This owner holds shares. Remove them from every share set first."
+    },
+    "building": {
+      "nameRequired": "Enter a building name",
+      "nameTaken": "A building with this name already exists",
+      "inUse": "This building has meters, expenses or recurring costs, so it cannot be deleted"
+    }
+  },
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "add": "Add",
+    "remove": "Remove",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleted": "Deleted",
+    "undo": "Undo",
+    "continue": "Continue",
+    "skipForNow": "Skip for now",
+    "optional": "{{label}} (optional)",
+    "none": "None",
+    "allBuildings": "All buildings"
+  },
+  "seed": {
+    "categories": {
+      "electricity": "Electricity",
+      "caretaker": "Caretaker cost",
+      "serviceCharge": "Service charge",
+      "gas": "Gas charge",
+      "holdingTax": "Holding tax",
+      "otherTax": "Other tax",
+      "repairs": "Repairs and maintenance",
+      "misc": "Misc"
+    }
+  },
+  "owner": {
+    "name": "Name",
+    "phone": "Phone",
+    "relation": "Relation",
+    "note": "Note",
+    "primary": "You"
+  },
+  "building": {
+    "name": "Building name",
+    "address": "Address",
+    "group": "Group",
+    "groupHint": "Optional, to group buildings, such as by area",
+    "note": "Note"
+  },
+  "shares": {
+    "effectiveFrom": "Effective from",
+    "effectiveFromHint": "These shares apply from this month onwards. Earlier months keep their shares.",
+    "owner": "Owner",
+    "percent": "Share %",
+    "addOwner": "Add owner",
+    "removeOwner": "Remove {{name}}",
+    "total": "Total {{total}}",
+    "remaining": "{{remaining}} left to assign",
+    "over": "{{over}} too much",
+    "note": "Note",
+    "chooseOwner": "Choose an owner",
+    "summary": "Shares set from {{month}}"
+  },
+  "setup": {
+    "title": "Set up Property Ledger",
+    "step": "Step {{step}} of {{total}}",
+    "restoreHint": "Moving to a new phone?",
+    "restoreLink": "Restore from a backup file",
+    "profile": {
+      "title": "About you",
+      "body": "You are the owner who records everything. Co-owners do not use the app."
+    },
+    "buildings": {
+      "title": "Your buildings",
+      "body": "Add each building you own with others. You can add details later.",
+      "empty": "No buildings yet"
+    },
+    "owners": {
+      "title": "Co-owners",
+      "body": "Add the people who share ownership with you.",
+      "empty": "No co-owners yet"
+    },
+    "shares": {
+      "title": "Ownership shares",
+      "body": "Enter each owner's percentage of every building. Expenses and rent are split by these shares.",
+      "needOwnersAndBuildings": "Add buildings first. You can set shares later from More."
+    },
+    "done": {
+      "title": "You're all set",
+      "body": "Expense categories are ready. You can change anything later from More.",
+      "installTitle": "Install the app",
+      "installBody": "In Chrome, open the ⋮ menu and choose \"Install app\" or \"Add to home screen\". The app then opens like any other app and works without internet.",
+      "finish": "Go to the dashboard"
     }
   }
 }

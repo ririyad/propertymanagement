@@ -122,6 +122,8 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 | D35 | `todayInDhaka()` lives in `src/services/clock.ts`. Domain code gets dates as parameters, and `dhakaDateOf(epochMs)` in `period.ts` is the pure conversion it uses. | Plan, 27 Oct |
 | D36 | The Content Security Policy allows no inline scripts or styles (`style-src 'self'`). `vite preview`, and so the e2e tests, serve the same policy from `public/_headers`, and the e2e tests fail on console errors. Loosen it only with a decision-log row. | Plan, 27 Oct |
 | D37 | The split engine's rule mapping returns one amount per owner involved, zero amounts included, ordered by sortOrder (17.1 S6, S7). Custom split inputs carry each owner's sortOrder for tie-breaks. Whether zero allocations are stored is decided in P1-T06. | Plan, 27 Oct |
+| D39 | Forms hold their values with react-hook-form and validate by calling the service, which returns i18n error keys per field, so every rule has one implementation. zod is used to check untrusted data such as backup files. | Plan, 28 Oct |
+| D40 | The system categories of 7.7 have fixed ids (`system-electricity` and so on) so code can find them, and are seeded on every start until done. Until setup is finished the app opens the setup wizard; its first step links to restoring a backup file. | Plan, 28 Oct |
 
 ## 3. Glossary
 

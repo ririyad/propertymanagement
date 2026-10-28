@@ -18,3 +18,24 @@ export function totalBp(values: Iterable<number>): number {
   for (const value of values) total += value
   return total
 }
+
+export type ParsePercentResult = { ok: true; value: Bp } | { ok: false; error: string }
+
+const PERCENT_PATTERN = /^(\d{1,3})?(?:\.(\d*))?$/
+
+/** Parses a percentage typed by the user: `33.33` gives 3333 bp. At most 2 decimals, 0 to 100. */
+export function parsePercent(text: string): ParsePercentResult {
+  const input = text.trim().replace(/\s*%$/, '')
+  if (input === '') return { ok: false, error: 'errors.percent.required' }
+
+  const match = PERCENT_PATTERN.exec(input)
+  const whole = match?.[1] ?? ''
+  const fraction = match?.[2] ?? ''
+  if (!match || (whole === '' && fraction === ''))
+    return { ok: false, error: 'errors.percent.invalid' }
+  if (fraction.length > 2) return { ok: false, error: 'errors.percent.tooManyDecimals' }
+
+  const value = Number(whole || '0') * 100 + Number(fraction.padEnd(2, '0'))
+  if (value > BP_WHOLE) return { ok: false, error: 'errors.percent.outOfRange' }
+  return { ok: true, value: bp(value) }
+}
