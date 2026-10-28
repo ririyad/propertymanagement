@@ -61,3 +61,8 @@ export async function deleteOwner(id: string): Promise<Result<Owner>> {
     return ok(deleted)
   })
 }
+
+/** Undoes deleteOwner. */
+export async function restoreOwner(id: string): Promise<void> {
+  await db.owner.update(id, { deletedAt: null, updatedAt: Date.now() })
+}

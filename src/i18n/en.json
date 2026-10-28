@@ -36,7 +36,9 @@
   "more": {
     "title": "More",
     "emptyTitle": "Settings are on the way",
-    "emptyBody": "Owners, buildings, shares, meters, categories and backups will be managed here."
+    "emptyBody": "Owners, buildings, shares, meters, categories and backups will be managed here.",
+    "setup": "Finish setup",
+    "setupDetail": "Add buildings, co-owners and shares"
   },
   "notFound": {
     "title": "Page not found",
@@ -198,5 +200,30 @@
       "installBody": "In Chrome, open the ⋮ menu and choose \"Install app\" or \"Add to home screen\". The app then opens like any other app and works without internet.",
       "finish": "Go to the dashboard"
     }
+  },
+  "owners": {
+    "title": "Owners",
+    "add": "Add owner",
+    "new": "New owner",
+    "editTitle": "Edit owner",
+    "empty": "No owners yet",
+    "sharesTitle": "Shares",
+    "noShares": "No shares in any building",
+    "shareLine": "{{percent}} from {{month}}",
+    "deleted": "Owner deleted"
+  },
+  "buildings": {
+    "title": "Buildings",
+    "add": "Add building",
+    "new": "New building",
+    "editTitle": "Edit building",
+    "empty": "No buildings yet",
+    "emptyBody": "Add the buildings you own with others.",
+    "deleted": "Building deleted",
+    "sharesLink": "Ownership shares",
+    "sharesNone": "No shares set yet",
+    "sharesCurrent": "From {{month}}",
+    "metersLink": "Meters",
+    "templatesLink": "Recurring costs"
   }
 }

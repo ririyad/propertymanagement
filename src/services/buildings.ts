@@ -75,3 +75,8 @@ export async function deleteBuilding(id: string): Promise<Result<Building>> {
     },
   )
 }
+
+/** Undoes deleteBuilding. */
+export async function restoreBuilding(id: string): Promise<void> {
+  await db.building.update(id, { deletedAt: null, updatedAt: Date.now() })
+}
