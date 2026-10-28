@@ -116,6 +116,12 @@ Emon and two co-owners jointly own two buildings. Building A has 8 electricity m
 | D28 | React Native (Expo) was considered and not chosen: native Google sign-in and local notifications need cloud builds (EAS) for every native change, and testing needs a phone in the loop. A PWA needs only Node and a browser, deploys in a minute, and also works on a laptop. Revisit only if the companion-worker approach (D29) proves unreliable; the domain code ports unchanged. | Plan, 27 Oct |
 | D29 | A companion worker on Cloudflare Workers (free plan) sends push reminders and holds the encrypted Google refresh token. It never stores financial data. It is the only server. | Emon, 27 Oct |
 | D30 | Backup is triggered by changes (one-off Background Sync when the app is left) plus a daily push-triggered check, not by a fixed timer, because data only changes when the app is used. | Plan, 27 Oct |
+| D32 | Supporting packages that the section 4 choices need: `@vitejs/plugin-react`, `@tailwindcss/vite`; `class-variance-authority`, `clsx`, `tailwind-merge` (the shadcn/ui variant and `cn` helpers); `workbox-core`, `workbox-precaching`, `workbox-routing`, `workbox-window` (the custom service worker and update prompt); `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `globals`; `jsdom` and `@testing-library/dom` (component tests); `@types/*`. Radix primitives are added per component when first needed. | Plan, 27 Oct |
+| D33 | TypeScript is pinned to 6.0.x because typescript-eslint (type-aware lint) does not support TypeScript 7 yet. Revisit when it does. | Plan, 27 Oct |
+| D34 | `src/domain` is type-checked a second time by `tsconfig.domain.json` without the DOM library, so DOM use in the domain, or an import that pulls the DOM in, fails `npm run typecheck`. This backs up the ESLint import ban of rule 0.2.3. | Plan, 27 Oct |
+| D35 | `todayInDhaka()` lives in `src/services/clock.ts`. Domain code gets dates as parameters, and `dhakaDateOf(epochMs)` in `period.ts` is the pure conversion it uses. | Plan, 27 Oct |
+| D36 | The Content Security Policy allows no inline scripts or styles (`style-src 'self'`). `vite preview`, and so the e2e tests, serve the same policy from `public/_headers`, and the e2e tests fail on console errors. Loosen it only with a decision-log row. | Plan, 27 Oct |
+| D37 | The split engine's rule mapping returns one amount per owner involved, zero amounts included, ordered by sortOrder (17.1 S6, S7). Custom split inputs carry each owner's sortOrder for tie-breaks. Whether zero allocations are stored is decided in P1-T06. | Plan, 27 Oct |
 
 ## 3. Glossary
 
@@ -196,8 +202,8 @@ Unidirectional data flow: **page component → feature hook → service (use cas
 | `src/domain/` | Pure TypeScript: types, `money.ts`, `bp.ts`, `period.ts`, `rational.ts`, engines (section 5.3). No imports from React, Dexie or the DOM. |
 | `src/data/db.ts` | Dexie database class, schema versions and upgrades (section 7.8). |
 | `src/data/repositories/` | One repository per aggregate (owners, buildings, shares, meters, expenses, rent...). Soft-delete filtering lives here. |
-| `src/services/` | Use cases: `saveExpense`, `confirmDraft`, `saveReadings`, `recordPayment`, `runRollover`, `backupNow`... |
-| `src/features/<name>/` | Pages, components and hooks per feature: `setup`, `owners`, `buildings`, `shares`, `meters`, `expenses`, `recurring`, `flats`, `tenants`, `rent`, `dashboard`, `reports`, `backup`, `settings`, `inheritance`. |
+| `src/services/` | Use cases: `saveExpense`, `confirmDraft`, `saveReadings`, `recordPayment`, `runRollover`, `backupNow`... Also `clock.ts` (`todayInDhaka`, decision D35). |
+| `src/features/<name>/` | Pages, components and hooks per feature: `setup`, `owners`, `buildings`, `shares`, `meters`, `expenses`, `recurring`, `flats`, `tenants`, `rent`, `dashboard`, `reports`, `backup`, `settings`, `inheritance`, `more` (the More tab). |
 | `src/ui/` | Theme, shadcn components, shared components (MoneyInput, PeriodPicker, OwnerChip, PhotoSlots, EmptyState, BottomNav), `format.ts` (taka formatting). |
 | `src/export/` | `pdf.ts`, `xlsx.ts`, `csv.ts`, `calendar.ts` (calendar links and .ics). |
 | `src/sync/` | `workerClient.ts`, `drive.ts`, `backup.ts`, `restore.ts`, `backupFile.ts`, `push.ts`. Usable from both the page and the service worker. |
@@ -227,7 +233,7 @@ Unidirectional data flow: **page component → feature hook → service (use cas
 
 | Topic | Convention |
 | --- | --- |
-| Money | `type Poisha = number & { readonly __brand: 'Poisha' }`. Helpers `add`, `sub`, `neg`, `mulInt`, `sum`, each asserting `Number.isSafeInteger`. No division helper: division only through `split.ts`, which uses `BigInt` internally. |
+| Money | `type Poisha = number & { readonly __brand: 'Poisha' }`. Helpers `add`, `sub`, `neg`, `mulInt`, `sum`, each asserting `Number.isSafeInteger`. No division helper in `money.ts`: division only through `split.ts` (the split engine, and `percentHalfUp` for basis-point rates such as VAT in 8.5), which uses `BigInt` internally. |
 | Shares | `type Bp = number & { readonly __brand: 'Bp' }`, integer 0..10000. |
 | Rates | Unit rates are integer poisha per unit (e.g. 7.50 BDT/unit = 750). |
 | Rounding | Half-up to the nearest poisha, only where a section says to round. |
@@ -816,9 +822,9 @@ Goal: a deployed, installable app shell and proven money maths.
 Acceptance criteria:
 
 - [ ] CI is green on `main` and the app is live on Cloudflare Pages, deployed from a private repository.
-- [ ] All 17.1 and 17.2 vectors pass as unit tests.
+- [x] All 17.1 and 17.2 vectors pass as unit tests.
 - [ ] Emon installs the app from Chrome on his phone; it opens in airplane mode and shows the five tabs.
-- [ ] Lint fails if `parseFloat` or `toFixed` is used in domain, data or service code.
+- [x] Lint fails if `parseFloat` or `toFixed` is used in domain, data or service code (`tests/lint/guards.test.ts`).
 
 ### Phase 1: Expense ledger, first usable app (4 to 6 weeks)
 
