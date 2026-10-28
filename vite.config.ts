@@ -19,7 +19,12 @@ function productionCsp(): string {
   return policy.trim()
 }
 
+const { version } = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
+) as { version: string }
+
 export default defineConfig({
+  define: { 'import.meta.env.VITE_APP_VERSION': JSON.stringify(version) },
   plugins: [
     react(),
     tailwindcss(),

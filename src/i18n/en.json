@@ -63,8 +63,6 @@
   },
   "more": {
     "title": "More",
-    "emptyTitle": "Settings are on the way",
-    "emptyBody": "Owners, buildings, shares, meters, categories and backups will be managed here.",
     "setup": "Finish setup",
     "setupDetail": "Add buildings, co-owners and shares"
   },
@@ -192,6 +190,11 @@
       "dueDayInvalid": "Choose a day from 1 to 28",
       "categoryInvalid": "Choose a category that is not for meters",
       "payerInvalid": "Choose one of the owners"
+    },
+    "backup": {
+      "notBackup": "This file is not a Property Ledger backup",
+      "damaged": "This backup file is damaged. Try another copy.",
+      "newerVersion": "This backup is from a newer version of the app. Update the app, then try again."
     }
   },
   "common": {
@@ -620,5 +623,34 @@
     "fromReading": "This bill comes from the meter reading for {{month}}. Change or delete the reading to change it.",
     "toReadings": "Open readings",
     "deleted": "Expense deleted"
+  },
+  "backup": {
+    "title": "Backup file",
+    "moreDetail": "Save all data to a file, or restore one",
+    "saveTitle": "Save a backup file",
+    "saveBody": "The file holds all your data. Keep it somewhere safe, such as your Google Drive or a WhatsApp message to yourself.",
+    "includePhotos": "Include photos (makes the file larger)",
+    "save": "Save backup file",
+    "saving": "Preparing…",
+    "saved": "Backup file saved",
+    "restoreTitle": "Restore from a file",
+    "restoreBody": "Restoring replaces all data on this device with the data in the file. Save a backup of this device first if it has data you want to keep.",
+    "chooseFile": "Choose backup file",
+    "chosen": "Chosen backup",
+    "from": "Backup from {{date}}",
+    "owners_one": "{{count}} owner",
+    "owners_other": "{{count}} owners",
+    "buildings_one": "{{count}} building",
+    "buildings_other": "{{count}} buildings",
+    "expenses_one": "{{count}} expense",
+    "expenses_other": "{{count}} expenses",
+    "readings_one": "{{count}} reading",
+    "readings_other": "{{count}} readings",
+    "photos_one": "{{count}} photo",
+    "photos_other": "{{count}} photos",
+    "noPhotos": "no photos",
+    "replaceWarning": "All data on this device will be replaced.",
+    "restore": "Replace and restore",
+    "restored": "Backup restored"
   }
 }

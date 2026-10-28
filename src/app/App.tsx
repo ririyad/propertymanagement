@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router'
+import { BackupPage } from '@/features/backup/BackupPage'
 import { BuildingDetailPage } from '@/features/buildings/BuildingDetailPage'
 import { BuildingEditPage } from '@/features/buildings/BuildingEditPage'
 import { BuildingsPage } from '@/features/buildings/BuildingsPage'
@@ -33,6 +34,7 @@ import { SetupGate } from './SetupGate'
 
 const router = createBrowserRouter([
   { path: '/setup', element: <SetupPage /> },
+  { path: '/backup', element: <BackupPage /> },
   {
     element: <AppLayout />,
     children: [

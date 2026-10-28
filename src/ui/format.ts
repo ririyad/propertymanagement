@@ -48,6 +48,21 @@ const dateFormat = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'UTC',
 })
 
+const dateTimeFormat = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+  timeZone: 'Asia/Dhaka',
+})
+
+/** An instant in Asia/Dhaka: "15 Oct 2026, 12:00". */
+export function formatDateTime(epochMs: number): string {
+  return dateTimeFormat.format(epochMs)
+}
+
 /** "October 2026". */
 export function formatPeriod(p: Period): string {
   return monthFormat.format(Date.UTC(Number(p.slice(0, 4)), Number(p.slice(5, 7)) - 1, 1))

@@ -1,4 +1,4 @@
-import { Building2, Tags, Users, Wand2 } from 'lucide-react'
+import { Building2, HardDriveDownload, Tags, Users, Wand2 } from 'lucide-react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useTranslation } from 'react-i18next'
 import { listShareSets } from '@/data/repositories/shares'
@@ -31,6 +31,11 @@ export function MorePage() {
         <ListRow to="/owners" title={<Icon icon={Users}>{t('owners.title')}</Icon>} />
         <ListRow to="/buildings" title={<Icon icon={Building2}>{t('buildings.title')}</Icon>} />
         <ListRow to="/categories" title={<Icon icon={Tags}>{t('categories.title')}</Icon>} />
+        <ListRow
+          to="/backup"
+          title={<Icon icon={HardDriveDownload}>{t('backup.title')}</Icon>}
+          detail={t('backup.moreDetail')}
+        />
       </List>
     </>
   )
