@@ -94,7 +94,8 @@
       "notFound": "This record no longer exists"
     },
     "period": {
-      "invalid": "Choose a month"
+      "invalid": "Choose a month",
+      "tooFarAhead": "Choose a month no later than next month"
     },
     "percent": {
       "required": "Enter a percentage",
@@ -135,6 +136,17 @@
     "units": {
       "required": "Enter the units",
       "invalid": "Enter a whole number of units"
+    },
+    "date": {
+      "invalid": "Choose a date"
+    },
+    "expense": {
+      "amountPositive": "Enter an amount above 0",
+      "payerRequired": "Choose who paid",
+      "buildingRequired": "Choose a building",
+      "categoryRequired": "Choose a category",
+      "meterInvalid": "Choose a meter of this building",
+      "notDraft": "This expense is already confirmed or skipped"
     }
   },
   "common": {
