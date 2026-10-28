@@ -74,14 +74,22 @@ GitHub Actions (`.github/workflows/ci.yml`) runs `npm run check` and `npm run e2
 request and push to `main`. When both pass it deploys: a preview link for each pull request, and
 production for `main`. Until the secrets below exist, the deploy job only prints a warning.
 
-One-time setup:
+Only GitHub Actions deploys, so a push that fails its tests never goes live (decision D48 in
+CLAUDE.md). One-time setup:
 
-1. In the Cloudflare dashboard, create a Pages project named `property-ledger` using
-   **Direct Upload** (not Git integration), with production branch `main`.
-2. Create an API token with the **Cloudflare Pages: Edit** permission (Phase 4 adds Workers).
-3. In the GitHub repository, add the secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
-   (Settings → Secrets and variables → Actions).
-4. Push to `main`. The app is served at `https://property-ledger.pages.dev`.
+1. The Cloudflare Pages project is `property-ledger`, with production branch `main`. It is
+   connected to this GitHub repository, so turn Cloudflare's own builds off: Workers & Pages →
+   `property-ledger` → Settings → Builds → Branch control, untick **Enable automatic production
+   branch deployments**, set **Preview branch** to **None**, and save. (For a new setup, a
+   **Direct Upload** project needs no such step.)
+2. Create an API token (My Profile → API Tokens → Create Token → Custom token) with the permission
+   **Account → Cloudflare Pages → Edit** (Phase 4 adds Workers). Copy the account ID from the
+   Workers & Pages overview.
+3. In the GitHub repository, add two secrets (Settings → Secrets and variables → Actions → New
+   repository secret), each holding only its value: `CLOUDFLARE_API_TOKEN` (the token) and
+   `CLOUDFLARE_ACCOUNT_ID` (the account ID).
+4. Push to `main`, or re-run the latest CI run. The deploy job's summary shows the deployment URL,
+   and the app is served at `https://property-ledger.pages.dev`.
 
 ## Install on the phone
 
